@@ -1,9 +1,11 @@
 // import { PrismaClient } from "@prisma/client";
 import prisma from "../Prisma_client.js";
 import Stripe from "stripe";
+import dotenv from "dotenv";
 
-require('dotenv').config();
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+
+dotenv.config();
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 
 export const createOrder = async (req, res, next) => {
