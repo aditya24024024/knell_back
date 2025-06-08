@@ -1,0 +1,80 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               Int       @id @default(autoincrement())
+  email            String    @unique
+  password         String
+  isSocialLogin    Boolean?  @default(false)
+  username         String?   @unique
+  fullName         String?
+  description      String?
+  profileImage     String?
+  isProfileInfoSet Boolean?  @default(false)
+  createdAt        DateTime  @default(now())
+  gigs             Gigs[]
+  messagesReceived Message[] @relation("receivedMessages")
+  messagesSent     Message[] @relation("sentMessages")
+  orders           Orders[]
+  reviews          Reviews[]
+}
+
+model Gigs {
+  id           Int       @id @default(autoincrement())
+  title        String
+  description  String
+  category     String
+  deliveryTime Int
+  features     String[]
+  price        Int
+  shortDesc    String
+  createdAt    DateTime  @default(now())
+  images       String[]
+  userId       Int
+  createdBy    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orders       Orders[]
+  reviews      Reviews[]
+}
+
+model Orders {
+  id            Int       @id @default(autoincrement())
+  createdAt     DateTime  @default(now())
+  buyerId       Int
+  paymentIntent String
+  gigId         Int
+  price         Int
+  status        String    @default("Request Sent")
+  messages      Message[]
+  buyer         User      @relation(fields: [buyerId], references: [id])
+  gig           Gigs      @relation(fields: [gigId], references: [id], onDelete: Cascade)
+}
+
+model Reviews {
+  id         Int      @id @default(autoincrement())
+  createdAt  DateTime @default(now())
+  rating     Int
+  reviewText String?
+  gigId      Int
+  reviewerId Int
+  gig        Gigs     @relation(fields: [gigId], references: [id], onDelete: Cascade)
+  reviewer   User     @relation(fields: [reviewerId], references: [id])
+}
+
+model Message {
+  id          Int      @id @default(autoincrement())
+  text        String
+  createdAt   DateTime @default(now())
+  isRead      Boolean  @default(false)
+  senderId    Int
+  recipientId Int
+  orderId     Int
+  order       Orders   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  recipient   User     @relation("receivedMessages", fields: [recipientId], references: [id])
+  sender      User     @relation("sentMessages", fields: [senderId], references: [id])
+}
