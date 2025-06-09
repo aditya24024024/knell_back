@@ -63,6 +63,13 @@ export const login = async (req, res, next) => {
       }
 
       const token = createToken(email, user.id);
+
+      res.cookie('token', token, {
+  httpOnly: true,
+  secure: true, // required for cross-site cookies (https)
+  sameSite: 'None', // allow cross-origin
+  maxAge: 3 * 24 * 60 * 60 * 1000 // 7 days
+});
       
       return res.status(200).json({
       user: { id: user.id, email: user.email },
