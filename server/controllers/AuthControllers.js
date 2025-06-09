@@ -30,6 +30,8 @@ export const signup = async (req, res, next) => {
       },
     });
 
+      const token=createToken(email, user.id);
+      
       res.cookie('jwt', token, {
   httpOnly: true,
   secure: true, // required for cross-site cookies (https)
@@ -39,7 +41,7 @@ export const signup = async (req, res, next) => {
       
     return res.status(200).json({
     user: { id: user.id, email: user.email },
-    jwt: createToken(email, user.id),
+    jwt: token,
     });
 
   }
@@ -80,7 +82,7 @@ export const login = async (req, res, next) => {
       
       return res.status(200).json({
       user: { id: user.id, email: user.email },
-      jwt: createToken(email, user.id),
+      jwt: token,
       });
     }
     return res.status(400).send("email password requied.");
