@@ -4,9 +4,9 @@ export const verifyToken = (req, res, next) => {
   let token;
 
   try {
-    token=req.cookies;
+    token=JSON.parse(req?.cookies?.jwt);
     console.log("mighty raju ka karachi se amna samna", token);
-    token = JSON.parse(req?.cookies?.jwt)?.jwt;
+    token = JSON.parse(req?.cookies?.jwt);
   } catch (err) {
     console.log("impregnit", req.cookies);
     return res.status(409).json({ message: "Invalid token format" });
