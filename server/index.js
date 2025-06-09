@@ -11,12 +11,6 @@ import { dashboardRoutes } from "./routes/DashboardRoutes.js";
 
 dotenv.config();
 
-app.use(cors({
-  origin: "https://knell.co.in",
-  credentials: true,
-}));
-
-
 const app = express() ;
 const port = process.env.PORT 
 app.use(
