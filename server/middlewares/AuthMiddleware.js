@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 
 export const verifyToken = (req, res, next) => {
-  console.log("🍪 Incoming Cookies:", req.cookies); 
+  console.log(" Incoming Cookies:", req.cookies); 
   let token;
 
   try {
