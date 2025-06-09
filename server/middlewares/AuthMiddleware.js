@@ -4,7 +4,8 @@ export const verifyToken = (req, res, next) => {
   let token;
 
   try {
-    console.log("mighty raju ka karachi se amna samna", req.cookies);
+    token=req.cookies||req.header;
+    console.log("mighty raju ka karachi se amna samna", token);
     token = JSON.parse(req?.cookies?.jwt)?.jwt;
   } catch (err) {
     console.log("impregnit", req.cookies);
