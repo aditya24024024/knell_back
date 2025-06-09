@@ -5,11 +5,13 @@ export const verifyToken = (req, res, next) => {
   let token;
 
   try {
-    token = JSON.parse(req?.cookies?.jwt)?.jwt;
+    token = JSON.parse(req?.cookies?.jwt);
 
   } catch (err) {
     console.error("❌ Error parsing token:", err);
-    return res.status(409).json({ message: "Invalid token format" });
+
+    return res.status(409).json({ message: "Invalid token format", receivedToken: token});
+    
   }
 
   if (!token) return res.status(410).json({ message: "No token provided" });
