@@ -1,15 +1,15 @@
 import jwt from "jsonwebtoken";
 
 export const verifyToken = (req, res, next) => {
-  console.log(" Incoming Cookies:", req.cookies); 
+  console.log(" Incoming Cookies:", req); 
   let token;
 
   try {
     token = JSON.parse(req.cookies.jwt);
 
   } catch (err) {
-    console.error("❌ Error parsing token:", err);
-    token=req;
+    console.error(" Error parsing token:", err);
+    token = JSON.parse(req.cookies.jwt);
     return res.status(409).json({ message: "Invalid token format", receivedToken: token});
     
   }

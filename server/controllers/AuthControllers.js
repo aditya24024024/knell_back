@@ -46,6 +46,7 @@ export const signup = async (req, res, next) => {
 export const login = async (req, res, next) => {
   try {
     // const prisma = new PrismaClient();
+    console.log("plis plis ujhe mat maro");
     const { email, password } = req.body;
 
     if(email && password ){
@@ -79,7 +80,7 @@ export const getUserInfo=async (req,res,next)=>{
   try {
     if (req?.userId) {
       // const prisma = new PrismaClient();
-      console.log(6969);
+      console.log("mai maa banne wali hu");
       const user = await prisma.user.findUnique({
         where: {
           id: req.userId,
