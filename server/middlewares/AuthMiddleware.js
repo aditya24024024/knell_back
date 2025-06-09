@@ -4,17 +4,17 @@ export const verifyToken = (req, res, next) => {
   let token;
 
   try {
-    console.log("mighty raju ka karachi se amna samna", res.cookies);
+    console.log("mighty raju ka karachi se amna samna", req.cookies);
     token = JSON.parse(req?.cookies?.jwt)?.jwt;
   } catch (err) {
-    console.log("impregnit", res.cookies);
+    console.log("impregnit", req.cookies);
     return res.status(409).json({ message: "Invalid token format" });
   }
-  console.log("kuch ni aaya", res.cookies);
+  console.log("kuch ni aaya", req.cookies);
   if (!token) return res.status(410).json({ message: "No token provided" });
 
   jwt.verify(token, process.env.JWT_KEY, (err, payload) => {
-    console.log("abbdbf", res.cookies);
+    console.log("abbdbf", req.cookies);
     if (err) return res.status(411).json({ message: "Token is not valid" });
     req.userId = payload.userId;
     next();
