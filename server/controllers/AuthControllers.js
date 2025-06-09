@@ -80,6 +80,7 @@ export const getUserInfo=async (req,res,next)=>{
   try {
     if (req?.userId) {
       // const prisma = new PrismaClient();
+      console.log(6969);
       const user = await prisma.user.findUnique({
         where: {
           id: req.userId,
