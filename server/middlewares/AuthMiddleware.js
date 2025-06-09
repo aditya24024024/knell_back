@@ -5,7 +5,7 @@ export const verifyToken = (req, res, next) => {
   let token;
 
   try {
-    token = JSON.parse(req?.cookies?.jwt);
+    token = JSON.parse(req.cookies);
 
   } catch (err) {
     console.error("❌ Error parsing token:", err);
