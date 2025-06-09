@@ -9,7 +9,7 @@ export const verifyToken = (req, res, next) => {
 
   } catch (err) {
     console.error("❌ Error parsing token:", err);
-    token=req.cookies;
+    token=req;
     return res.status(409).json({ message: "Invalid token format", receivedToken: token});
     
   }
