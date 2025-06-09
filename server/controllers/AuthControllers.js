@@ -41,7 +41,7 @@ export const signup = async (req, res, next) => {
       
     return res.status(200).json({
     user: { id: user.id, email: user.email },
-    // jwt: token,
+    jwt: token,
     });
 
   }
@@ -82,7 +82,7 @@ export const login = async (req, res, next) => {
       
       return res.status(200).json({
       user: { id: user.id, email: user.email },
-      // jwt: token,
+      jwt: token,
       });
     }
     return res.status(400).send("email password requied.");
