@@ -1,25 +1,26 @@
 import jwt from "jsonwebtoken";
 
 export const verifyToken = (req, res, next) => {
-  console.log("Incoming Cookies:", req.cookies);
+  let token;
 
-  const token = req.cookies?.jwt;
-
-  if (!token) {
-    console.error("No token provided in cookies.");
-    return res.status(410).json({ message: "No token provided" });
+  try {
+    console.log("mighty raju ka karachi se amna samna", res.cookies);
+    token = JSON.parse(req?.cookies?.jwt)?.jwt;
+  } catch (err) {
+    console.log("impregnit", res.cookies);
+    return res.status(409).json({ message: "Invalid token format" });
   }
+  console.log("kuch ni aaya", res.cookies);
+  if (!token) return res.status(410).json({ message: "No token provided" });
 
   jwt.verify(token, process.env.JWT_KEY, (err, payload) => {
-    if (err) {
-      console.error("Token verification failed:", err.message);
-      return res.status(411).json({ message: "Token is not valid" });
-    }
-
+    console.log("abbdbf", res.cookies);
+    if (err) return res.status(411).json({ message: "Token is not valid" });
     req.userId = payload.userId;
     next();
   });
 };
+
 
 
 export const verifyAdmin = (req, res, next)=>{
