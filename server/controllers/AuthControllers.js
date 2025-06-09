@@ -31,11 +31,13 @@ export const signup = async (req, res, next) => {
     });
 
     return res
-    .status(200)
-    .json({
-      user: { id: user.id, email: user.email },
-      jwt: createToken(email, user.id),
-    });
+      .cookie("jwt", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: maxAge * 1000, // in ms
+      sameSite: "strict",})
+      .status(200)
+      .json({user: { id: user.id, email: user.email },});
   }
   return res.status(400).send("Email and password are required.");
   } catch (err) {
@@ -62,12 +64,16 @@ export const login = async (req, res, next) => {
         return res.status(400).send("Invalid password.");
       }
 
+      const token = createToken(email, user.id);
+      
       return res
+      .cookie("jwt", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: maxAge * 1000, // in ms
+      sameSite: "strict",})
       .status(200)
-      .json({
-        user: { id: user.id, email: user.email },
-        jwt: createToken(email, user.id),
-      });
+      .json({user: { id: user.id, email: user.email },});
     }
     return res.status(400).send("email password requied.");
   } catch (err) {
