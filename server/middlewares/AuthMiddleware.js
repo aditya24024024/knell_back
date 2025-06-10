@@ -17,7 +17,7 @@ export const verifyToken = (req, res, next) => {
   jwt.verify(token, process.env.JWT_KEY, (err, payload) => {
     if (err) return res.status(411).json({ message: "Token is not valid" });
     req.userId = payload?.userId;
-    console.log("abbdbf", req.cookies);
+    console.log("abbdbf", req.userId);
     next();
   });
 };
