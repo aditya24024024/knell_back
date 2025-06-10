@@ -91,6 +91,7 @@ export const createOrder = async (req, res, next) => {
   };
 
   export const getSellerRequests = async (req, res, next) => {
+          console.log("allah");
     try {
           console.log("a");
       if (req.userId) {
