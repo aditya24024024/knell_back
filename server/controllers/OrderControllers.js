@@ -92,8 +92,10 @@ export const createOrder = async (req, res, next) => {
 
   export const getSellerRequests = async (req, res, next) => {
     try {
+          console.log("a");
       if (req.userId) {
         // const prisma = new PrismaClient();
+          console.log("k");
         const orders = await prisma.orders.findMany({
           where: {
             gig: {
@@ -110,6 +112,7 @@ export const createOrder = async (req, res, next) => {
             buyer: true,
           },
         });
+          console.log(orders);
         return res.status(200).json({ orders });
       }
       return res.status(400).send("User id is required.");
