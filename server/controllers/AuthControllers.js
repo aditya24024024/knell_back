@@ -185,11 +185,11 @@ export const setUserImage = async (req, res, next) => {
 
 export const logout = (req, res) => {
   console.log("asdfbn")
-  // res.clearCookie('jwt', {
-  //   httpOnly: true,
-  //   secure: true,
-  //   sameSite: 'None'
-  // });
+  res.clearCookie('jwt', {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'None'
+  });
 
   return res.status(200).json({ message: 'Logged out successfully' });
 };
