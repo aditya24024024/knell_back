@@ -11,7 +11,7 @@ const generatePassword = async (password) => {
   return await hash(password, salt);
 };
 
-const maxAge = 3 * 24 * 60 * 60;
+const maxAge = 3 * 24 * 60 * 60*1000;
 
 const createToken = (email, userId) => {
   return jwt.sign({ email, userId }, process.env.JWT_KEY, { expiresIn: maxAge });
@@ -41,7 +41,7 @@ export const signup = async (req, res, next) => {
       
     return res.status(200).json({
     user: { id: user.id, email: user.email },
-    jwt: token,
+    // jwt: token,
     });
 
   }
@@ -55,7 +55,7 @@ export const signup = async (req, res, next) => {
 export const login = async (req, res, next) => {
   try {
     // const prisma = new PrismaClient();
-    console.log("plis plis ujhe mat maro");
+    // console.log("plis plis ujhe mat maro");
     const { email, password } = req.body;
 
     if(email && password ){
@@ -82,7 +82,7 @@ export const login = async (req, res, next) => {
       
       return res.status(200).json({
       user: { id: user.id, email: user.email },
-      jwt: token,
+      // jwt: token,
       });
     }
     return res.status(400).send("email password requied.");
@@ -96,7 +96,7 @@ export const getUserInfo=async (req,res,next)=>{
   try {
     if (req?.userId) {
       // const prisma = new PrismaClient();
-      console.log("mai maa banne wali hu");
+      // console.log("mai maa banne wali hu");
       const user = await prisma.user.findUnique({
         where: {
           id: req.userId,
