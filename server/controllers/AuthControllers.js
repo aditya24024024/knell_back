@@ -182,3 +182,13 @@ export const setUserImage = async (req, res, next) => {
     res.status(500).send("Internal Server Occured");
   }
 };
+
+export const logout = (req, res) => {
+  res.clearCookie('jwt', {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'None'
+  });
+
+  return res.status(200).json({ message: 'Logged out successfully' });
+};
