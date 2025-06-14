@@ -36,7 +36,7 @@ export const signup = async (req, res, next) => {
   httpOnly: true,
   secure: true,
   sameSite: 'None',
-  path: '/'
+  path: '/',
   maxAge: 3 * 24 * 60 * 60 * 1000
 });
 
@@ -85,7 +85,7 @@ export const login = async (req, res, next) => {
   httpOnly: true,
   secure: true,
   sameSite: 'None',
-  path: '/'
+  path: '/',
   maxAge: 3 * 24 * 60 * 60 * 1000
 });
     
