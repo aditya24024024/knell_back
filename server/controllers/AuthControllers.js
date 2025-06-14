@@ -34,10 +34,12 @@ export const signup = async (req, res, next) => {
       
       res.cookie('jwt', token, {
   httpOnly: true,
-  secure: true, // required for cross-site cookies (https)
-  sameSite: 'None', // allow cross-origin
-  maxAge: 3 * 24 * 60 * 60 * 1000 // 7 days
+  secure: true,
+  sameSite: 'None',
+  path: '/'
+  maxAge: 3 * 24 * 60 * 60 * 1000
 });
+
       
     return res.status(200).json({
     user: { id: user.id, email: user.email },
@@ -73,13 +75,20 @@ export const login = async (req, res, next) => {
 
       const token = createToken(email, user.id);
 
+//       res.cookie('jwt', token, {
+//   httpOnly: true,
+//   secure: true, // required for cross-site cookies (https)
+//   sameSite: 'None', // allow cross-origin
+//   maxAge: 3 * 24 * 60 * 60 * 1000 // 7 days
+// });
       res.cookie('jwt', token, {
   httpOnly: true,
-  secure: true, // required for cross-site cookies (https)
-  sameSite: 'None', // allow cross-origin
-  maxAge: 3 * 24 * 60 * 60 * 1000 // 7 days
+  secure: true,
+  sameSite: 'None',
+  path: '/'
+  maxAge: 3 * 24 * 60 * 60 * 1000
 });
-      
+    
       return res.status(200).json({
       user: { id: user.id, email: user.email },
       // jwt: token,
