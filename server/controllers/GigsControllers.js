@@ -92,6 +92,7 @@ export const addGig = async (req, res, next) => {
   };
 
   export const editGig = async (req, res, next) => {
+      console.log(req.params.gigid);
     try {
       if (req.files) {
         const fileKeys = Object.keys(req.files);
