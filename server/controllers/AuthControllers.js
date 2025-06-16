@@ -22,7 +22,14 @@ export const signup = async (req, res, next) => {
     // const prisma = new PrismaClient();
     const { email, password } = req.body;
 
-    if(email && password ){
+      const existing_user = await prisma.user.findUnique({
+        where : {email},
+      });
+    
+    if(existing_user){
+      return res.status(501).send("User already exist.");
+    }
+    
     const user = await prisma.user.create({
       data: {
         email,
@@ -45,9 +52,6 @@ export const signup = async (req, res, next) => {
     user: { id: user.id, email: user.email },
     // jwt: token,
     });
-
-  }
-  return res.status(400).send("Email and password are required.");
   } catch (err) {
     console.log(err);
     return res.status(500).send("Internal server error.");
