@@ -135,19 +135,19 @@ export const getUserInfo=async (req,res,next)=>{
 export const setUserInfo = async (req, res, next) => {
   try {
     if (req?.userId) {
-      const { userName, fullName, description } = req.body;
-      if (userName && fullName && description) {
+      const { username, fullName, description } = req.body;
+      if (username && fullName && description) {
         // const prisma = new PrismaClient();
-        const userNameValid = await prisma.user.findUnique({
-          where: { username: userName },
+        const usernameValid = await prisma.user.findUnique({
+          where: { username: username },
         });
-        if (userNameValid) {
-          return res.status(200).json({ userNameError: true });
+        if (usernameValid) {
+          return res.status(200).json({ usernameError: true });
         }
         await prisma.user.update({
           where: { id: req.userId },
           data: {
-            username: userName,
+            username,
             fullName,
             description,
             isProfileInfoSet: true,
@@ -163,7 +163,7 @@ export const setUserInfo = async (req, res, next) => {
   } catch (err) {
     if (err instanceof Prisma.PrismaClientKnownRequestError) {
       if (err.code === "P2002") {
-        return res.status(400).json({ userNameError: true });
+        return res.status(400).json({ usernameError: true });
       }
     } else {
       return res.status(500).send("Internal Server Error");
