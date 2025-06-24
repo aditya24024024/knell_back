@@ -11,7 +11,7 @@ const generatePassword = async (password) => {
   return await hash(password, salt);
 };
 
-const maxAge = 3 * 24 * 60 * 60;
+const maxAge = 3 * 24 * 60 * 60*1000;
 
 const createToken = (email, userId) => {
   return jwt.sign({ email, userId }, process.env.JWT_KEY, { expiresIn: maxAge });
@@ -22,7 +22,14 @@ export const signup = async (req, res, next) => {
     // const prisma = new PrismaClient();
     const { email, password } = req.body;
 
-    if(email && password ){
+      const existing_user = await prisma.user.findUnique({
+        where : {email},
+      });
+    
+    if(existing_user){
+      return res.status(501).send("User already exist.");
+    }
+    
     const user = await prisma.user.create({
       data: {
         email,
@@ -30,13 +37,21 @@ export const signup = async (req, res, next) => {
       },
     });
 
+      const token=createToken(email, user.id);
+      
+      res.cookie('jwt', token, {
+  httpOnly: true,
+  secure: true,
+  sameSite: 'None',
+  path: '/',
+  maxAge: 3 * 24 * 60 * 60 * 1000
+});
+
+      
     return res.status(200).json({
     user: { id: user.id, email: user.email },
-    jwt: createToken(email, user.id),
+    // jwt: token,
     });
-
-  }
-  return res.status(400).send("Email and password are required.");
   } catch (err) {
     console.log(err);
     return res.status(500).send("Internal server error.");
@@ -46,7 +61,7 @@ export const signup = async (req, res, next) => {
 export const login = async (req, res, next) => {
   try {
     // const prisma = new PrismaClient();
-    console.log("plis plis ujhe mat maro");
+    // console.log("plis plis ujhe mat maro");
     const { email, password } = req.body;
 
     if(email && password ){
@@ -63,10 +78,24 @@ export const login = async (req, res, next) => {
       }
 
       const token = createToken(email, user.id);
-      
+
+//       res.cookie('jwt', token, {
+//   httpOnly: true,
+//   secure: true, // required for cross-site cookies (https)
+//   sameSite: 'None', // allow cross-origin
+//   maxAge: 3 * 24 * 60 * 60 * 1000 // 7 days
+// });
+      res.cookie('jwt', token, {
+  httpOnly: true,
+  secure: true,
+  sameSite: 'None',
+  path: '/',
+  maxAge: 3 * 24 * 60 * 60 * 1000
+});
+    
       return res.status(200).json({
       user: { id: user.id, email: user.email },
-      jwt: createToken(email, user.id),
+      // jwt: token,
       });
     }
     return res.status(400).send("email password requied.");
@@ -80,7 +109,7 @@ export const getUserInfo=async (req,res,next)=>{
   try {
     if (req?.userId) {
       // const prisma = new PrismaClient();
-      console.log("mai maa banne wali hu");
+      // console.log("mai maa banne wali hu");
       const user = await prisma.user.findUnique({
         where: {
           id: req.userId,
@@ -106,19 +135,19 @@ export const getUserInfo=async (req,res,next)=>{
 export const setUserInfo = async (req, res, next) => {
   try {
     if (req?.userId) {
-      const { userName, fullName, description } = req.body;
-      if (userName && fullName && description) {
+      const { username, fullName, description } = req.body;
+      if (username && fullName && description) {
         // const prisma = new PrismaClient();
-        const userNameValid = await prisma.user.findUnique({
-          where: { username: userName },
+        const usernameValid = await prisma.user.findUnique({
+          where: { username: username },
         });
-        if (userNameValid) {
-          return res.status(200).json({ userNameError: true });
+        if (usernameValid) {
+          return res.status(200).json({ usernameError: true });
         }
         await prisma.user.update({
           where: { id: req.userId },
           data: {
-            username: userName,
+            username,
             fullName,
             description,
             isProfileInfoSet: true,
@@ -134,7 +163,7 @@ export const setUserInfo = async (req, res, next) => {
   } catch (err) {
     if (err instanceof Prisma.PrismaClientKnownRequestError) {
       if (err.code === "P2002") {
-        return res.status(400).json({ userNameError: true });
+        return res.status(400).json({ usernameError: true });
       }
     } else {
       return res.status(500).send("Internal Server Error");
@@ -165,4 +194,15 @@ export const setUserImage = async (req, res, next) => {
     console.log(err);
     res.status(500).send("Internal Server Occured");
   }
+};
+
+export const logout = (req, res) => {
+  console.log("asdfbn")
+  res.clearCookie('jwt', {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'None'
+  });
+
+  return res.status(200).json({ message: 'Logged out successfully' });
 };

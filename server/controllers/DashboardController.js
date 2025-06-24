@@ -96,7 +96,9 @@ export const getSellerData = async (req, res, next) => {
               id: req.userId,
             },
           },
-          status: "Request Sent",
+          status:{
+            not:"Completed",
+          }
       }});
       // console.log(orders)
       return res.status(200).json({

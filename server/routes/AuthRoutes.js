@@ -11,9 +11,8 @@ import {
 } from "../controllers/AuthControllers.js";
 
 import { verifyToken } from "../middlewares/AuthMiddleware.js";
-
-const authRoutes = Router();
-const upload = multer({ dest: "uploads/profiles/" });
+import { getUserInfo,setUserInfo,setUserImage } from "../controllers/AuthControllers.js";
+import multer from "multer";
 
 // Auth
 authRoutes.post("/signup", signup);
@@ -22,9 +21,6 @@ authRoutes.post("/login", login);
 // Private Profile
 authRoutes.post("/get-user-info", verifyToken, getUserInfo);
 authRoutes.post("/set-user-info", verifyToken, setUserInfo);
-authRoutes.post("/set-user-image", verifyToken, upload.single("images"), setUserImage);
-
-// Public Profile
-authRoutes.get("/user/:username", getUserPublicProfile);
+authRoutes.post("/set-user-image", verifyToken, upload.single("images"),setUserImage);
 
 export default authRoutes;

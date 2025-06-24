@@ -51,7 +51,7 @@ model Orders {
   price         Int
   status        String    @default("Request Sent")
   messages      Message[]
-  buyer         User      @relation(fields: [buyerId], references: [id])
+  buyer         User      @relation(fields: [buyerId], references: [id], onDelete: Cascade)
   gig           Gigs      @relation(fields: [gigId], references: [id], onDelete: Cascade)
 }
 
@@ -63,7 +63,7 @@ model Reviews {
   gigId      Int
   reviewerId Int
   gig        Gigs     @relation(fields: [gigId], references: [id], onDelete: Cascade)
-  reviewer   User     @relation(fields: [reviewerId], references: [id])
+  reviewer   User     @relation(fields: [reviewerId], references: [id], onDelete: Cascade)
 }
 
 model Message {
@@ -75,6 +75,6 @@ model Message {
   recipientId Int
   orderId     Int
   order       Orders   @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  recipient   User     @relation("receivedMessages", fields: [recipientId], references: [id])
-  sender      User     @relation("sentMessages", fields: [senderId], references: [id])
+  recipient   User     @relation("receivedMessages", fields: [recipientId], references: [id], onDelete: Cascade)
+  sender      User     @relation("sentMessages", fields: [senderId], references: [id], onDelete: Cascade)
 }
