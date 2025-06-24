@@ -7,9 +7,10 @@ import {
   logout,
   getUserInfo,
   setUserInfo,
-  setUserImage,
-  getUserPublicProfile, // ✅ IMPORT this controller
+  setUserImage // ✅ IMPORT this controller
 } from "../controllers/AuthControllers.js";
+
+import { getUserPublicProfile } from "../controllers/UserController.js";
 
 import { verifyToken } from "../middlewares/AuthMiddleware.js";
 
