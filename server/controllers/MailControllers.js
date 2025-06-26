@@ -20,8 +20,10 @@ export const send_mail = async (to) => {
   const mailOptions = {
     from: process.env.EMAIL_USER,
     to,
-    subject: "Your OTP Code",
-    text: `You have an order`,
+    subject: "🎉 You’ve received a new booking on Knell!",
+    text: `You’ve received a new booking request on Knell!
+
+Check on your seller dashboard to see the order details!`,
   };
   await transporter.sendMail(mailOptions);
 };
@@ -30,8 +32,16 @@ async function sendOtpEmail(to, otp) {
   const mailOptions = {
     from: process.env.EMAIL_USER,
     to,
-    subject: "Your OTP Code",
-    text: `Your OTP is: ${otp}. It expires in 5 minutes.`,
+    subject: "Your Knell Sign-Up OTP",
+    text: `Your Knell Sign-Up code is: ${otp}
+
+Enter this OTP to complete your Sign-Up process.
+
+This code is valid for 5 minutes.
+
+If you didn’t request this, please ignore the message.
+
+– Team Knell 🟢`,
   };
 
   await transporter.sendMail(mailOptions);
