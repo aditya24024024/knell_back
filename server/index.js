@@ -8,7 +8,7 @@ import { gigsRoutes } from "./routes/GigsRoutes.js";
 import { orderRoutes } from "./routes/OrderRoutes.js";
 import { messageRoutes } from "./routes/MessagesRoutes.js";
 import { dashboardRoutes } from "./routes/DashboardRoutes.js";
-import { profile } from "console";
+import { mailRoutes } from "./routes/MailRoutes.js";
 
 dotenv.config();
 
@@ -33,6 +33,7 @@ app.use("/api/gigs", gigsRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/otp", mailRoutes);
 
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);

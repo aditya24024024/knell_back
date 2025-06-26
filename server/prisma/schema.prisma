@@ -25,6 +25,14 @@ model User {
   reviews          Reviews[]
 }
 
+model Otp {
+  id               Int       @id @default(autoincrement())
+  email            String    @unique
+  password         String
+  code             String
+  expiresAt        DateTime
+}
+
 model Gigs {
   id           Int       @id @default(autoincrement())
   title        String

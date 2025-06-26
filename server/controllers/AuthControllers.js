@@ -1,15 +1,8 @@
 // import { Prisma , PrismaClient } from "@prisma/client";
 import prisma from "../Prisma_client.js";
-import { genSalt, hash, compare } from "bcrypt";
+import { compare } from "bcrypt";
 import jwt from "jsonwebtoken";
 import {renameSync} from "fs"
-
-// const prisma = new PrismaClient();
-
-const generatePassword = async (password) => {
-  const salt = await genSalt(10);
-  return await hash(password, salt);
-};
 
 const maxAge = 3 * 24 * 60 * 60*1000;
 
@@ -22,18 +15,18 @@ export const signup = async (req, res, next) => {
     // const prisma = new PrismaClient();
     const { email, password } = req.body;
 
-      const existing_user = await prisma.user.findUnique({
-        where : {email},
-      });
+    //   const existing_user = await prisma.user.findUnique({
+    //     where : {email},
+    //   });
     
-    if(existing_user){
-      return res.status(501).send("User already exist.");
-    }
+    // if(existing_user){
+    //   return res.status(501).send("User already exist.");
+    // }
     
     const user = await prisma.user.create({
       data: {
         email,
-        password: await generatePassword(password),
+        password
       },
     });
 
@@ -50,7 +43,7 @@ export const signup = async (req, res, next) => {
       
     return res.status(200).json({
     user: { id: user.id, email: user.email },
-    // jwt: token,
+    jwt: token,
     });
   } catch (err) {
     console.log(err);
@@ -79,12 +72,6 @@ export const login = async (req, res, next) => {
 
       const token = createToken(email, user.id);
 
-//       res.cookie('jwt', token, {
-//   httpOnly: true,
-//   secure: true, // required for cross-site cookies (https)
-//   sameSite: 'None', // allow cross-origin
-//   maxAge: 3 * 24 * 60 * 60 * 1000 // 7 days
-// });
       res.cookie('jwt', token, {
   httpOnly: true,
   secure: true,
@@ -206,3 +193,6 @@ export const logout = (req, res) => {
 
   return res.status(200).json({ message: 'Logged out successfully' });
 };
+
+EMAIL_USER="akshajvasudeva@gmail.com"
+EMAIL_PASS="qradobhogcezhcxu"

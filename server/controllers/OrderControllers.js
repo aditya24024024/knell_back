@@ -2,6 +2,7 @@
 import prisma from "../Prisma_client.js";
 import Stripe from "stripe";
 import dotenv from "dotenv";
+import { send_mail } from "./MailControllers.js";
 
 
 dotenv.config();
@@ -32,6 +33,13 @@ export const createOrder = async (req, res, next) => {
             gig: { connect: { id: gig?.id } },
           },
         });
+        const userId=gig.userId;
+        const {email}=await prisma.user.findUnique({
+          where:{id:userId},
+          select:{email:true},
+        })
+        console.log(email);
+        await send_mail(email);
         res.status(200).send({
           clientSecret: paymentIntent.client_secret,
           orderid: prisma.orders.id,
@@ -91,12 +99,12 @@ export const createOrder = async (req, res, next) => {
   };
 
   export const getSellerRequests = async (req, res, next) => {
-          console.log("allah");
+          // console.log("allah");
     try {
-          console.log("a");
+          // console.log("a");
       if (req.userId) {
         // const prisma = new PrismaClient();
-          console.log("k");
+          // console.log("k");
         const orders = await prisma.orders.findMany({
           where: {
             gig: {
