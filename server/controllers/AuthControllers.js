@@ -193,6 +193,3 @@ export const logout = (req, res) => {
 
   return res.status(200).json({ message: 'Logged out successfully' });
 };
-
-EMAIL_USER="akshajvasudeva@gmail.com"
-EMAIL_PASS="qradobhogcezhcxu"
