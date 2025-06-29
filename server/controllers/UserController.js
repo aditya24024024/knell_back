@@ -5,7 +5,7 @@ export const getUserPublicProfile = async (req, res) => {
 
   try {
     const user = await prisma.user.findUnique({
-      where: { username },
+      where: { username:username },
       select: {
         id: true,
         username: true,
