@@ -1,20 +1,20 @@
-// import { PrismaClient } from "@prisma/client";
 import prisma from "../Prisma_client.js";
-import { existsSync, renameSync, unlinkSync } from "fs";
+import { v2 as cloudinary } from "cloudinary";
 
 export const addGig = async (req, res, next) => {
     try {
       if (req.files) {
-        const fileKeys = Object.keys(req.files);
-        const fileNames = [];
-        fileKeys.forEach((file) => {
-          const date = Date.now();
-          renameSync(
-            req.files[file].path,
-            "uploads/" + date + req.files[file].originalname
-          );
-          fileNames.push(date + req.files[file].originalname);
-        });
+        // const fileKeys = Object.keys(req.files);
+        // const fileNames = [];
+        // fileKeys.forEach((file) => {
+        //   const date = Date.now();
+        //   renameSync(
+        //     req.files[file].path,
+        //     "uploads/" + date + req.files[file].originalname
+        //   );
+        //   fileNames.push(date + req.files[file].originalname);
+        // });
+        const fileNames = req.files.map(file => file.path);
         if (req.query) {
           const {
             title,
@@ -92,20 +92,21 @@ export const addGig = async (req, res, next) => {
   };
 
   export const editGig = async (req, res, next) => {
-      console.log(req.params.gigid);
-      console.log(req.params.gigId);
+      // console.log(req.params.gigid);
+      // console.log(req.params.gigId);
     try {
       if (req.files) {
-        const fileKeys = Object.keys(req.files);
-        const fileNames = [];
-        fileKeys.forEach((file) => {
-          const date = Date.now();
-          renameSync(
-            req.files[file].path,
-            "uploads/" + date + req.files[file].originalname
-          );
-          fileNames.push(date + req.files[file].originalname);
-        });
+        // const fileKeys = Object.keys(req.files);
+        // const fileNames = [];
+        // fileKeys.forEach((file) => {
+        //   const date = Date.now();
+        //   renameSync(
+        //     req.files[file].path,
+        //     "uploads/" + date + req.files[file].originalname
+        //   );
+        //   fileNames.push(date + req.files[file].originalname);
+        // });
+        const fileNames =req.files.map(file => file.path);
         if (req.query) {
           const {
             title,
@@ -136,9 +137,20 @@ export const addGig = async (req, res, next) => {
               images: fileNames,
             },
           });
-          oldData?.images.forEach((image) => {
-            if (existsSync(`uploads/${image}`)) unlinkSync(`uploads/${image}`);
-          });
+          // oldData?.images.forEach((image) => {
+          //   if (existsSync(`uploads/${image}`)) unlinkSync(`uploads/${image}`);
+          // });
+            if (oldData?.images?.length > 0) {
+        oldData.images.forEach(imageUrl => {
+          // Extract public_id from the Cloudinary URL
+          const publicId = imageUrl;
+          if (publicId) {
+            cloudinary.uploader.destroy(publicId, (error, result) => {
+              if (error) console.error("Failed to delete image from Cloudinary:", error);
+            });
+          }
+        });
+      }
   
           return res.status(201).send("Successfully Eited the gig.");
         }
