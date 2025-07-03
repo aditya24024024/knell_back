@@ -2,9 +2,10 @@ import multer from "multer";
 import { verifyToken, verifyAdmin} from "../middlewares/AuthMiddleware.js";
 import { addGig, addReview, checkGigOrder, editGig, getGigData, getUserAuthGigs, searchGigs, adminData, deletegig } from "../controllers/GigsControllers.js";
 import { Router } from "express";
+import { storage } from "../cloudinaryConfig.js";
 
 export const gigsRoutes=Router()
-const upload = multer({ dest: "uploads/" });
+const upload = multer({ storage });
 
 gigsRoutes.post("/add", verifyToken, upload.array("images"), addGig);
 gigsRoutes.get("/get-user-gigs", verifyToken, getUserAuthGigs);
