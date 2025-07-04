@@ -61,7 +61,7 @@ export const createOrder = async (req, res, next) => {
       include: {
         createdBy: {
           select: {
-            id: true,
+            profileImage: true,
             username: true,
           },
         },
