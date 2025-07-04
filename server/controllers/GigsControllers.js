@@ -308,14 +308,24 @@ export const addGig = async (req, res, next) => {
     console.log(req.query.gigId)
     try {
       if (req.userId) {
-        // console.log(req.userId)
+        const oldData = await prisma.gigs.findUnique({
+            where: { id: parseInt(req.params.gigid) },
+          });
+        if (oldData?.images?.length > 0) {
+        oldData.images.forEach(imageUrl => {
+          const publicId = extractPublicId(imageUrl);
+          if (publicId) {
+            cloudinary.uploader.destroy(publicId, (error, result) => {
+              if (error) console.error("Failed to delete image from Cloudinary:", error);
+            });
+          }
+        });
+      }
         await prisma.gigs.delete({
           where:{
             id:parseInt(req.query.gigId),
           }
         },);
-        // console.log(user.gigs)
-        // return res.status(200).json({ gigs: user ?? [] });
         return adminData
       }
       return res.status(400).send("UserId should be required.");
