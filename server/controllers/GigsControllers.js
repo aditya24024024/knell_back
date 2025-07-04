@@ -1,6 +1,17 @@
 import prisma from "../Prisma_client.js";
 import { v2 as cloudinary } from "cloudinary";
 
+function extractPublicId(url) {
+  try {
+    const parts = url.split("/");
+    const publicIdWithExt = parts.slice(-2).join("/"); // e.g., "gigs/filename.jpg"
+    const publicId = publicIdWithExt.replace(/\.[^/.]+$/, ""); // remove extension
+    return publicId;
+  } catch {
+    return null;
+  }
+}
+
 export const addGig = async (req, res, next) => {
     try {
       if (req.files) {
@@ -143,7 +154,7 @@ export const addGig = async (req, res, next) => {
             if (oldData?.images?.length > 0) {
         oldData.images.forEach(imageUrl => {
           // Extract public_id from the Cloudinary URL
-          const publicId = imageUrl;
+          const publicId = extractPublicId(imageUrl);
           if (publicId) {
             cloudinary.uploader.destroy(publicId, (error, result) => {
               if (error) console.error("Failed to delete image from Cloudinary:", error);
