@@ -19,7 +19,7 @@ const storage = new CloudinaryStorage({
 const profile = new CloudinaryStorage({
   cloudinary,
   params: {
-    folder: "profile", 
+    folder: "profiles", 
     allowed_formats: ["jpg", "jpeg", "png", "webp"],
   },
 });
