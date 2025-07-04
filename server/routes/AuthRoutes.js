@@ -11,7 +11,7 @@ import {
 } from "../controllers/AuthControllers.js";
 
 import { getUserPublicProfile } from "../controllers/UserController.js";
-import { storage } from "../cloudinaryConfig.js";
+import { profile } from "../cloudinaryConfig.js";
 import { verifyToken } from "../middlewares/AuthMiddleware.js";
 
 const authRoutes = Router();
