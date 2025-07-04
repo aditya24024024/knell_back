@@ -160,6 +160,7 @@ export const setUserImage = async (req, res, next) => {
       if (req?.userId) {
         console.log(req.file);
         const fileName = req.file.path;
+        console.log(req.file.path);
         const oldData = await prisma.user.findUnique({
             where: { id: req.userId },
           });
