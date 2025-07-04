@@ -1,4 +1,3 @@
-// import { PrismaClient } from "@prisma/client";
 import prisma from "../Prisma_client.js";
 import Stripe from "stripe";
 import dotenv from "dotenv";
@@ -14,7 +13,6 @@ export const createOrder = async (req, res, next) => {
       if(req?.userId){
         if (req?.body?.gigid) {
         const { gigid } = req.body;
-        // const prisma = new PrismaClient();
         const gig = await prisma.gigs.findUnique({
           where: { id: parseInt(gigid) },
         });
@@ -38,7 +36,6 @@ export const createOrder = async (req, res, next) => {
           where:{id:userId},
           select:{email:true},
         })
-        console.log(email);
         await send_mail(email);
         res.status(200).send({
           clientSecret: paymentIntent.client_secret,
@@ -57,10 +54,20 @@ export const createOrder = async (req, res, next) => {
   export const getBuyerOrders = async (req, res, next) => {
     try {
       if (req.userId) {
-        // const prisma = new PrismaClient();
         const orders = await prisma.orders.findMany({
           where: { buyerId: req.userId,},
-          include: { gig: true },
+          include: {
+    gig: {
+      include: {
+        createdBy: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+      },
+    },
+  },
         });
         return res.status(200).json({ orders });
       }
