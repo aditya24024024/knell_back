@@ -305,11 +305,10 @@ export const addGig = async (req, res, next) => {
   };
 
   export const deletegig = async (req, res, next) => {
-    console.log(req.query.gigId)
     try {
       if (req.userId) {
         const oldData = await prisma.gigs.findUnique({
-            where: { id: parseInt(req.params.gigid) },
+            where: { id: parseInt(req.params.gigId) },
           });
         if (oldData?.images?.length > 0) {
         oldData.images.forEach(imageUrl => {
