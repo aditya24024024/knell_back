@@ -308,7 +308,7 @@ export const addGig = async (req, res, next) => {
     try {
       if (req.userId) {
         const oldData = await prisma.gigs.findUnique({
-            where: { id: parseInt(req.params.gigId) },
+            where: { id: parseInt(req.query.gigId) },
           });
         if (oldData?.images?.length > 0) {
         oldData.images.forEach(imageUrl => {
