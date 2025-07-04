@@ -11,11 +11,11 @@ import {
 } from "../controllers/AuthControllers.js";
 
 import { getUserPublicProfile } from "../controllers/UserController.js";
-import { storage } from "../cloudinaryConfig.js";
+import { storage, profile } from "../cloudinaryConfig.js";
 import { verifyToken } from "../middlewares/AuthMiddleware.js";
 
 const authRoutes = Router();
-const upload = multer({ storage });
+const upload = multer({ storage:profile });
 
 // ✅ AUTH ROUTES
 authRoutes.post("/signup", signup);
