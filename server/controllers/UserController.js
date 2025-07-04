@@ -15,7 +15,6 @@ export const getUserPublicProfile = async (req, res) => {
         profileImage: true,
       },
     });
-    console.log(user);
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
@@ -34,7 +33,6 @@ export const getUserPublicProfile = async (req, res) => {
         },
       },
     });
-    console.log(gigs);
 
     return res.status(200).json({ user, gigs });
   } catch (error) {
