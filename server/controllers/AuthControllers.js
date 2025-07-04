@@ -2,7 +2,18 @@
 import prisma from "../Prisma_client.js";
 import { compare } from "bcrypt";
 import jwt from "jsonwebtoken";
-import {renameSync} from "fs"
+import { v2 as cloudinary } from "cloudinary";
+
+function extractPublicId(url) {
+  try {
+    const parts = url.split("/");
+    const publicIdWithExt = parts.slice(-2).join("/"); // e.g., "gigs/filename.jpg"
+    const publicId = publicIdWithExt.replace(/\.[^/.]+$/, ""); // remove extension
+    return publicId;
+  } catch {
+    return null;
+  }
+}
 
 const maxAge = 3 * 24 * 60 * 60*1000;
 
@@ -12,17 +23,7 @@ const createToken = (email, userId) => {
 
 export const signup = async (req, res, next) => {
   try {
-    // const prisma = new PrismaClient();
     const { email, password } = req.body;
-
-    //   const existing_user = await prisma.user.findUnique({
-    //     where : {email},
-    //   });
-    
-    // if(existing_user){
-    //   return res.status(501).send("User already exist.");
-    // }
-    
     const user = await prisma.user.create({
       data: {
         email,
@@ -53,8 +54,6 @@ export const signup = async (req, res, next) => {
 
 export const login = async (req, res, next) => {
   try {
-    // const prisma = new PrismaClient();
-    // console.log("plis plis ujhe mat maro");
     const { email, password } = req.body;
 
     if(email && password ){
@@ -82,7 +81,6 @@ export const login = async (req, res, next) => {
     
       return res.status(200).json({
       user: { id: user.id, email: user.email },
-      // jwt: token,
       });
     }
     return res.status(400).send("email password requied.");
@@ -95,8 +93,6 @@ export const login = async (req, res, next) => {
 export const getUserInfo=async (req,res,next)=>{
   try {
     if (req?.userId) {
-      // const prisma = new PrismaClient();
-      // console.log("mai maa banne wali hu");
       const user = await prisma.user.findUnique({
         where: {
           id: req.userId,
@@ -124,7 +120,6 @@ export const setUserInfo = async (req, res, next) => {
     if (req?.userId) {
       const { username, fullName, description } = req.body;
       if (username && fullName && description) {
-        // const prisma = new PrismaClient();
         const usernameValid = await prisma.user.findUnique({
           where: { username: username },
         });
@@ -163,11 +158,20 @@ export const setUserImage = async (req, res, next) => {
   try {
     if (req.file) {
       if (req?.userId) {
-        const date = Date.now();
-        let fileName = "uploads/profiles/" + date + req.file.originalname;
-        renameSync(req.file.path, fileName);
-        // const prisma = new PrismaClient();
-
+        const oldData = await prisma.user.findUnique({
+            where: { id: req.userId },
+          });
+        if (oldData?.images?.length > 0) {
+        oldData.images.forEach(imageUrl => {
+          const publicId = extractPublicId(imageUrl);
+          if (publicId) {
+            cloudinary.uploader.destroy(publicId, (error, result) => {
+              if (error) console.error("Failed to delete image from Cloudinary:", error);
+            });
+          }
+        });
+      }
+        const fileName = req.files.map(file => file.path);
         await prisma.user.update({
           where: { id: req.userId },
           data: { profileImage: fileName },
@@ -184,12 +188,10 @@ export const setUserImage = async (req, res, next) => {
 };
 
 export const logout = (req, res) => {
-  console.log("asdfbn")
   res.clearCookie('jwt', {
     httpOnly: true,
     secure: true,
     sameSite: 'None'
   });
-
   return res.status(200).json({ message: 'Logged out successfully' });
 };
