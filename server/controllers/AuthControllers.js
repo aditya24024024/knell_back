@@ -158,20 +158,25 @@ export const setUserImage = async (req, res, next) => {
   try {
     if (req.file) {
       if (req?.userId) {
+        console.log(req.file);
+        const fileName = req.file.path;
         const oldData = await prisma.user.findUnique({
             where: { id: req.userId },
           });
         if (oldData?.images?.length > 0) {
-        oldData.images.forEach(imageUrl => {
-          const publicId = extractPublicId(imageUrl);
-          if (publicId) {
-            cloudinary.uploader.destroy(publicId, (error, result) => {
-              if (error) console.error("Failed to delete image from Cloudinary:", error);
-            });
-          }
-        });
+        const imageUrl = oldData.images;
+const publicId = extractPublicId(imageUrl);
+
+if (publicId) {
+  cloudinary.uploader.destroy(publicId, (error, result) => {
+    if (error) {
+      console.error("Failed to delete image from Cloudinary:", error);
+    } else {
+      console.log("Deleted from Cloudinary:", result);
+    }
+  });
+}
       }
-        const fileName = req.files.map(file => file.path);
         await prisma.user.update({
           where: { id: req.userId },
           data: { profileImage: fileName },
