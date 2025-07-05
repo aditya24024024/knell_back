@@ -23,6 +23,15 @@ export const createOrder = async (req, res, next) => {
             enabled: true,
           },
         });
+        const already_ordered=await prisma.orders.findUnique({
+          where: { id: parseInt(gigid),
+                    buyerId:req?.userId,
+                    status:{
+                        not:"Completed"
+                    }
+                 },
+        });
+        if(already_ordered) {return res.status(401).send("You already have a pending request from the gig");}
         await prisma.orders.create({
           data: {
             paymentIntent: paymentIntent.id,
@@ -81,7 +90,6 @@ export const createOrder = async (req, res, next) => {
   export const getSellerOrders = async (req, res, next) => {
     try {
       if (req.userId) {
-        // const prisma = new PrismaClient();
         const orders = await prisma.orders.findMany({
           where: {
             gig: {
@@ -106,12 +114,8 @@ export const createOrder = async (req, res, next) => {
   };
 
   export const getSellerRequests = async (req, res, next) => {
-          // console.log("allah");
     try {
-          // console.log("a");
       if (req.userId) {
-        // const prisma = new PrismaClient();
-          // console.log("k");
         const orders = await prisma.orders.findMany({
           where: {
             gig: {
@@ -139,10 +143,8 @@ export const createOrder = async (req, res, next) => {
   };
 
   export const confirmOrder = async (req, res, next) => {
-    // console.log(req.body.orderId);
     try {
       if (req.body.orderId) {
-        // const prisma = new PrismaClient();
         await prisma.orders.update({
           where: { id: parseInt(req.body.orderId) },
           data: { status: "Request Accepted" },
@@ -150,16 +152,13 @@ export const createOrder = async (req, res, next) => {
         return getSellerOrders;
       }
     } catch (err) {
-      // console.log(req.query.orderId);
       console.log(err);
       return res.status(500).send("Internal Server Error");
     }
   };
   export const complete = async (req, res, next) => {
-    // console.log(req.body.orderId);
     try {
       if (req.body.orderId) {
-        // const prisma = new PrismaClient();
         await prisma.orders.update({
           where: { id: parseInt(req.body.orderId) },
           data: { status: "Completed" },
@@ -167,16 +166,13 @@ export const createOrder = async (req, res, next) => {
         return getSellerOrders;
       }
     } catch (err) {
-      // console.log(req.query.orderId);
       console.log(err);
       return res.status(500).send("Internal Server Error");
     }
   };
   export const decline = async (req, res, next) => {
-    // console.log(req.query.orderId)
     try {
       if (req.query.orderId) {
-        // const prisma = new PrismaClient();
         await prisma.orders.delete({
           where: { id: parseInt(req.query.orderId) },
         });
@@ -186,5 +182,4 @@ export const createOrder = async (req, res, next) => {
       console.log(err);
       return res.status(500).send("Internal Server Error");
     }
-    // console.log("starting")
   };
