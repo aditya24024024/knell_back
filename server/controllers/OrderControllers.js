@@ -31,17 +31,6 @@ export const createOrder = async (req, res, next) => {
                     }
                  },
         });
-        // const already_ordere=await prisma.orders.find({
-        //   where: { id: parseInt(gigid),
-        //          },
-        // });
-        const already_order=await prisma.orders.findFirst({
-          where: {id: parseInt(gigid),  
-              buyerId:req?.userId,
-                 },
-        });
-            console.log(already_order);
-            console.log(already_ordered);
         if(already_ordered) {return res.status(401).send("You already have a pending request from the gig");}
         await prisma.orders.create({
           data: {
@@ -56,7 +45,7 @@ export const createOrder = async (req, res, next) => {
           where:{id:userId},
           select:{email:true},
         })
-        // await send_mail(email);
+        await send_mail(email);
         res.status(200).send({
           clientSecret: paymentIntent.client_secret,
           orderid: prisma.orders.id,
