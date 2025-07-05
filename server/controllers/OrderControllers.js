@@ -167,6 +167,22 @@ export const createOrder = async (req, res, next) => {
       return res.status(500).send("Internal Server Error");
     }
   };
+  export const delete_orders = async (req, res, next) => {
+    try {
+      if (req.userId) {
+        // await prisma.orders.delete({
+        //   where:{
+        //     id:parseInt(req.query.orderId),
+        //   }
+        // },);
+          console.log(req.query.orderId);
+          console.log(parseInt(req.query.orderId));
+      }
+    } catch (err) {
+      console.log(err);
+      return res.status(500).send("Internal Server Error");
+    }
+  };
   export const complete = async (req, res, next) => {
     try {
       if (req.body.orderId) {
