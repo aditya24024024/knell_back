@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { verifyToken } from "../middlewares/AuthMiddleware.js";
-import { confirmOrder, createOrder, getBuyerOrders, getSellerOrders,decline,complete,getSellerRequests } from "../controllers/OrderControllers.js";
+import { verifyToken,verifyAdmin } from "../middlewares/AuthMiddleware.js";
+import { confirmOrder, createOrder, getBuyerOrders, getSellerOrders,decline,complete,getSellerRequests,all_orders } from "../controllers/OrderControllers.js";
 
 export const orderRoutes = Router();
 
@@ -10,4 +10,5 @@ orderRoutes.get("/get-buyer-orders", verifyToken, getBuyerOrders);
 orderRoutes.get("/get-seller-orders", verifyToken, getSellerOrders);
 orderRoutes.get("/get-seller-requests", verifyToken, getSellerRequests);
 orderRoutes.get("/decline-order", verifyToken, decline);
+orderRoutes.get("/all-order", verifyAdmin, all_orders);
 orderRoutes.put("/complete", verifyToken, complete);
