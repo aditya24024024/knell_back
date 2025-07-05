@@ -24,7 +24,7 @@ export const createOrder = async (req, res, next) => {
           },
         });
         const already_ordered=await prisma.orders.find({
-          where: { id: parseInt(gigid),
+          where: { gigId: parseInt(gigid),
                     buyerId:req?.userId,
                     status:{
                         not:"Completed"
