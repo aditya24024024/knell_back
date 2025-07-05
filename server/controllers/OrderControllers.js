@@ -170,13 +170,11 @@ export const createOrder = async (req, res, next) => {
   export const delete_orders = async (req, res, next) => {
     try {
       if (req.userId) {
-        // await prisma.orders.delete({
-        //   where:{
-        //     id:parseInt(req.query.orderId),
-        //   }
-        // },);
-          console.log(req.query.orderId);
-          console.log(parseInt(req.query.orderId));
+        await prisma.orders.delete({
+          where:{
+            id:parseInt(req.query.orderId),
+          }
+        },);
       }
     } catch (err) {
       console.log(err);
