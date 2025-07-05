@@ -175,6 +175,7 @@ export const createOrder = async (req, res, next) => {
             id:parseInt(req.query.orderId),
           }
         },);
+        return all_orders;
       }
     } catch (err) {
       console.log(err);
