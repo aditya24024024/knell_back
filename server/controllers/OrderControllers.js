@@ -23,7 +23,7 @@ export const createOrder = async (req, res, next) => {
             enabled: true,
           },
         });
-        const already_ordered=await prisma.orders.find({
+        const already_ordered=await prisma.orders.findMany({
           where: { gigId: parseInt(gigid),
                     buyerId:req?.userId,
                     status:{
