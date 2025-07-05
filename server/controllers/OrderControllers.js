@@ -35,7 +35,7 @@ export const createOrder = async (req, res, next) => {
         //   where: { id: parseInt(gigid),
         //          },
         // });
-        const already_order=await prisma.orders.find({
+        const already_order=await prisma.orders.findUnique({
           where: {id: parseInt(gigid),  
               buyerId:req?.userId,
                  },
