@@ -156,6 +156,17 @@ export const createOrder = async (req, res, next) => {
       return res.status(500).send("Internal Server Error");
     }
   };
+  export const all_orders = async (req, res, next) => {
+    try {
+      if (req.userId) {
+        const orders = await prisma.orders.findMany();
+        return res.status(200).json({ orders });
+      }
+    } catch (err) {
+      console.log(err);
+      return res.status(500).send("Internal Server Error");
+    }
+  };
   export const complete = async (req, res, next) => {
     try {
       if (req.body.orderId) {
