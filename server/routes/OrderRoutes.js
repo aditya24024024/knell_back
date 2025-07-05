@@ -10,5 +10,5 @@ orderRoutes.get("/get-buyer-orders", verifyToken, getBuyerOrders);
 orderRoutes.get("/get-seller-orders", verifyToken, getSellerOrders);
 orderRoutes.get("/get-seller-requests", verifyToken, getSellerRequests);
 orderRoutes.get("/decline-order", verifyToken, decline);
-orderRoutes.get("/all-order", verifyAdmin, all_orders);
+orderRoutes.get("/all-orders", verifyAdmin, all_orders);
 orderRoutes.put("/complete", verifyToken, complete);
