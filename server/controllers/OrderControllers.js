@@ -157,8 +157,7 @@ export const createOrder = async (req, res, next) => {
           where:{id:buyerId},
           select:{email:true},
         })
-          console.log(email);
-        await accept_mail(email);
+        // await accept_mail(email);
         return getSellerOrders;
       }
     } catch (err) {
