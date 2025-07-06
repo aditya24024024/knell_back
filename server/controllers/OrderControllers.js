@@ -45,7 +45,7 @@ export const createOrder = async (req, res, next) => {
           where:{id:userId},
           select:{email:true},
         })
-        await send_mail(email);
+        // await send_mail(email);
         res.status(200).send({
           clientSecret: paymentIntent.client_secret,
           orderid: prisma.orders.id,
@@ -148,6 +148,16 @@ export const createOrder = async (req, res, next) => {
           where: { id: parseInt(req.body.orderId) },
           data: { status: "Request Accepted" },
         });
+          const {buyerId}=await prisma.orders.findUnique({
+              where: { id: parseInt(req.body.orderId) },
+              select:{buyerId:true},
+          });
+          console.log(buyerId);
+        const {email}=await prisma.user.findUnique({
+          where:{id:buyerId},
+          select:{email:true},
+        })
+          console.log(email);
         await accept_mail(email);
         return getSellerOrders;
       }
