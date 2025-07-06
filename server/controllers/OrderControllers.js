@@ -1,7 +1,7 @@
 import prisma from "../Prisma_client.js";
 import Stripe from "stripe";
 import dotenv from "dotenv";
-import { send_mail } from "./MailControllers.js";
+import { send_mail, accept_mail } from "./MailControllers.js";
 
 
 dotenv.config();
@@ -132,7 +132,6 @@ export const createOrder = async (req, res, next) => {
             buyer: true,
           },
         });
-          console.log(orders);
         return res.status(200).json({ orders });
       }
       return res.status(400).send("User id is required.");
@@ -149,6 +148,7 @@ export const createOrder = async (req, res, next) => {
           where: { id: parseInt(req.body.orderId) },
           data: { status: "Request Accepted" },
         });
+        await accept_mail(email);
         return getSellerOrders;
       }
     } catch (err) {
