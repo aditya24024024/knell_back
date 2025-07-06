@@ -159,6 +159,7 @@ export const createOrder = async (req, res, next) => {
         })
         // await accept_mail(email);
         // return getSellerOrders(req, res, next);
+          return res.status(200).json("Success");
       }
     } catch (err) {
       console.log(err);
@@ -184,6 +185,7 @@ export const createOrder = async (req, res, next) => {
             id:parseInt(req.query.orderId),
           }
         },);
+          return res.status(200).json("Success");
         // return all_orders;
       }
     } catch (err) {
@@ -198,6 +200,7 @@ export const createOrder = async (req, res, next) => {
           where: { id: parseInt(req.body.orderId) },
           data: { status: "Completed" },
         });
+          return res.status(200).json("Success");
         // return getSellerOrders(req, res, next);
       }
     } catch (err) {
@@ -212,6 +215,7 @@ export const createOrder = async (req, res, next) => {
           where: { id: parseInt(req.query.orderId) },
         });
         // return getSellerOrders(req, res, next);
+          return res.status(200).json("Success");
       }
     } catch (err) {
       console.log(err);
