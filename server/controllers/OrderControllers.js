@@ -158,7 +158,7 @@ export const createOrder = async (req, res, next) => {
           select:{email:true},
         })
         // await accept_mail(email);
-        return getSellerOrders(req, res, next);
+        // return getSellerOrders(req, res, next);
       }
     } catch (err) {
       console.log(err);
@@ -184,7 +184,7 @@ export const createOrder = async (req, res, next) => {
             id:parseInt(req.query.orderId),
           }
         },);
-        return all_orders;
+        // return all_orders;
       }
     } catch (err) {
       console.log(err);
@@ -198,7 +198,7 @@ export const createOrder = async (req, res, next) => {
           where: { id: parseInt(req.body.orderId) },
           data: { status: "Completed" },
         });
-        return getSellerOrders(req, res, next);
+        // return getSellerOrders(req, res, next);
       }
     } catch (err) {
       console.log(err);
@@ -211,7 +211,7 @@ export const createOrder = async (req, res, next) => {
         await prisma.orders.delete({
           where: { id: parseInt(req.query.orderId) },
         });
-        return getSellerOrders(req, res, next);
+        // return getSellerOrders(req, res, next);
       }
     } catch (err) {
       console.log(err);
