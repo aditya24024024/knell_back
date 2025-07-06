@@ -28,6 +28,18 @@ Check on your seller dashboard to see the order details!`,
   await transporter.sendMail(mailOptions);
 };
 
+export const accept_mail = async (to) => {
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to,
+    subject: "🎉 Your request got accepted!",
+    text: `Your request got accepted by the service provider!
+
+Check on your buyer dashboard to see the order details!`,
+  };
+  await transporter.sendMail(mailOptions);
+};
+
 async function sendOtpEmail(to, otp) {
   const mailOptions = {
     from: process.env.EMAIL_USER,
