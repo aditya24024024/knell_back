@@ -45,7 +45,7 @@ export const createOrder = async (req, res, next) => {
           where:{id:userId},
           select:{email:true},
         })
-        // await send_mail(email);
+        await send_mail(email);
         res.status(200).send({
           clientSecret: paymentIntent.client_secret,
           orderid: prisma.orders.id,
@@ -157,9 +157,8 @@ export const createOrder = async (req, res, next) => {
           where:{id:buyerId},
           select:{email:true},
         })
-        // await accept_mail(email);
-        // return getSellerOrders(req, res, next);
-          return res.status(200).json("Success");
+        await accept_mail(email);
+        return res.status(200).json("Success");
       }
     } catch (err) {
       console.log(err);
@@ -186,7 +185,6 @@ export const createOrder = async (req, res, next) => {
           }
         },);
           return res.status(200).json("Success");
-        // return all_orders;
       }
     } catch (err) {
       console.log(err);
@@ -201,7 +199,6 @@ export const createOrder = async (req, res, next) => {
           data: { status: "Completed" },
         });
           return res.status(200).json("Success");
-        // return getSellerOrders(req, res, next);
       }
     } catch (err) {
       console.log(err);
@@ -214,7 +211,6 @@ export const createOrder = async (req, res, next) => {
         await prisma.orders.delete({
           where: { id: parseInt(req.query.orderId) },
         });
-        // return getSellerOrders(req, res, next);
           return res.status(200).json("Success");
       }
     } catch (err) {
