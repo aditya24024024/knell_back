@@ -2,7 +2,6 @@ import prisma from "../Prisma_client.js";
 
 export const getSellerData = async (req, res, next) => {
   try {
-    console.log("fsgdcjsd");
     if (req.userId) {
       const gigs = await prisma.gigs.count({ where: { userId: req.userId } });
       const {
