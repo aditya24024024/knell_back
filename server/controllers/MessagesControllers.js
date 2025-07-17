@@ -23,7 +23,6 @@ export const addMessage = async (req, res, next) => {
         },
       });
 
-      // Emit message to the recipient via WebSocket
       const io = req.app.get("io");
       io.to(req.body.recipentId.toString()).emit("newMessage", message);
 
