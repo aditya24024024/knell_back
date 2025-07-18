@@ -45,7 +45,7 @@ export const createOrder = async (req, res, next) => {
           where:{id:userId},
           select:{email:true},
         })
-        // await send_mail(email);
+        await send_mail(email);
         res.status(200).send({
           clientSecret: paymentIntent.client_secret,
           orderid: prisma.orders.id,
