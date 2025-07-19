@@ -8,7 +8,8 @@ import {
   getUserInfo,
   setUserInfo,
   setUserImage,
-  allUsers
+  allUsers,
+  deleteUser
 } from "../controllers/AuthControllers.js";
 
 import { getUserPublicProfile } from "../controllers/UserController.js";
@@ -25,6 +26,7 @@ authRoutes.post("/logout", verifyToken, logout);
 authRoutes.post("/get-user-info", verifyToken, getUserInfo);
 authRoutes.post("/set-user-info", verifyToken, setUserInfo);
 authRoutes.post("/all-users", verifyAdmin, allUsers);
+authRoutes.post("/delete-users", verifyAdmin, deleteUser);
 authRoutes.post("/set-user-image", verifyToken, upload.single("images"), setUserImage);
 
 // ✅ PUBLIC PROFILE ROUTE (GET)
