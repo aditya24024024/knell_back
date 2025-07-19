@@ -198,6 +198,7 @@ export const allUsers = async (req, res, next) => {
             id:true,
             email: true,
             username: true,
+            gigs: true,
         },
         orderBy: {
           id: 'asc',
