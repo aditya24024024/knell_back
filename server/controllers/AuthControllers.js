@@ -233,7 +233,7 @@ export const deleteUser = async (req, res, next) => {
             });
           }
         }
-        for (const gig of Userdata.gigs) {
+        for (const gig of UserData.gigs) {
           await deletegigimages(gig.id);
         }
         await prisma.user.delete({
