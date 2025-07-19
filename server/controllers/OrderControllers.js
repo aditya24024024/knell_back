@@ -168,7 +168,11 @@ export const createOrder = async (req, res, next) => {
   export const all_orders = async (req, res, next) => {
     try {
       if (req.userId) {
-        const orders = await prisma.orders.findMany();
+        const orders = const orders = await prisma.orders.findMany({
+        orderBy: {
+          orderId: 'asc',
+        },
+      });
         return res.status(200).json({ orders });
       }
     } catch (err) {
