@@ -293,8 +293,10 @@ export const addGig = async (req, res, next) => {
             id:true,
             title: true,
             category: true,
+        },
+        orderBy: {
+          gigId: 'asc',
         },});
-        // console.log(user.gigs)
         return res.status(200).json({ gigs: user ?? [] });
       }
       return res.status(400).send("UserId of admin should be required.");
