@@ -220,6 +220,19 @@ export const deleteUser = async (req, res, next) => {
             include:{gigs:true}
         });
         console.log(UserData);
+        if (UserData?.profileImage?.length > 0) {
+          const imageUrl = UserData.profileImage;
+          const publicId = extractPublicId(imageUrl);
+          if (publicId) {
+            cloudinary.uploader.destroy(publicId, (error, result) => {
+              if (error) {
+                console.error("Failed to delete image from Cloudinary:", error);
+              } else {
+                console.log("Deleted from Cloudinary:", result);
+              }
+            });
+          }
+        }
         for (const gig of Userdata.gigs) {
           await deletegigimages(gig.id);
         }
