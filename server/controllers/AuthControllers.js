@@ -198,7 +198,6 @@ export const allUsers = async (req, res, next) => {
             id:true,
             email: true,
             username: true,
-            gigs: true,
         },
         orderBy: {
           id: 'asc',
@@ -213,21 +212,50 @@ export const allUsers = async (req, res, next) => {
   };
 
 export const deleteUser = async (req, res, next) => {
-    try {
+  try {
       if (req.userId) {
-        const user = await prisma.user.findMany({
-          select: {
-            id:true,
-            email: true,
-            username: true,
-            gigs: true,
-        },
-        orderBy: {
-          id: 'asc',
-        },});
-        return res.status(200).json({ users: user ?? [] });
+        console.log(req.query.userId);
+        const UserData = await prisma.user.findUnique({
+            where: { id: parseInt(req.query.userId) },
+            include:{gigs:true}
+        });
+        console.log(UserData);
+        for (const gig of Userdata.gigs) {
+          await deletegigimages(gig.id);
+        }
+        await prisma.user.delete({
+          where:{
+            id:parseInt(req.query.userId),
+          }
+        },);
+      return res.status(200).send("UserId should be required.");
       }
-      return res.status(400).send("UserId of admin should be required.");
+      return res.status(400).send("UserId should be required.");
+    } catch (err) {
+      console.log(err);
+      return res.status(500).send("Internal Server Error");
+    }
+  };
+
+const deletegigimages = async (gigId) => {
+    try {
+      if (gigId) {
+        const oldData = await prisma.gigs.findUnique({
+            where: { id: parseInt(gigId) },
+          });
+        if (oldData?.images?.length > 0) {
+        oldData.images.forEach(imageUrl => {
+          const publicId = extractPublicId(imageUrl);
+          if (publicId) {
+            cloudinary.uploader.destroy(publicId, (error, result) => {
+              if (error) console.error("Failed to delete image from Cloudinary:", error);
+            });
+          }
+        });
+      }
+      return res.status(200).send("Cloud images deleted.");
+      }
+      return res.status(400).send("UserId should be required.");
     } catch (err) {
       console.log(err);
       return res.status(500).send("Internal Server Error");
