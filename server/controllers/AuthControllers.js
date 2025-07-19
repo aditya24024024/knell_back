@@ -241,7 +241,7 @@ export const deleteUser = async (req, res, next) => {
             id:parseInt(req.query.userId),
           }
         },);
-      return res.status(200).send("UserId should be required.");
+      return res.status(200).send("User deleted.");
       }
       return res.status(400).send("UserId should be required.");
     } catch (err) {
