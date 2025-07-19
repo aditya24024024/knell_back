@@ -26,7 +26,7 @@ authRoutes.post("/logout", verifyToken, logout);
 authRoutes.post("/get-user-info", verifyToken, getUserInfo);
 authRoutes.post("/set-user-info", verifyToken, setUserInfo);
 authRoutes.get("/all-users", verifyAdmin, allUsers);
-authRoutes.get("/delete-users", verifyAdmin, deleteUser);
+authRoutes.get("/delete-user", verifyAdmin, deleteUser);
 authRoutes.post("/set-user-image", verifyToken, upload.single("images"), setUserImage);
 
 // ✅ PUBLIC PROFILE ROUTE (GET)
