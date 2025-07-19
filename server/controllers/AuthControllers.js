@@ -214,12 +214,10 @@ export const allUsers = async (req, res, next) => {
 export const deleteUser = async (req, res, next) => {
   try {
       if (req.userId) {
-        console.log(req.query.userId);
         const UserData = await prisma.user.findUnique({
             where: { id: parseInt(req.query.userId) },
             include:{gigs:true}
         });
-        console.log(UserData);
         if (UserData?.profileImage?.length > 0) {
           const imageUrl = UserData.profileImage;
           const publicId = extractPublicId(imageUrl);
