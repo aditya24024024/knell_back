@@ -4,8 +4,8 @@ import { v2 as cloudinary } from "cloudinary";
 function extractPublicId(url) {
   try {
     const parts = url.split("/");
-    const publicIdWithExt = parts.slice(-2).join("/"); // e.g., "gigs/filename.jpg"
-    const publicId = publicIdWithExt.replace(/\.[^/.]+$/, ""); // remove extension
+    const publicIdWithExt = parts.slice(-2).join("/");
+    const publicId = publicIdWithExt.replace(/\.[^/.]+$/, "");
     return publicId;
   } catch {
     return null;
@@ -15,16 +15,6 @@ function extractPublicId(url) {
 export const addGig = async (req, res, next) => {
     try {
       if (req.files) {
-        // const fileKeys = Object.keys(req.files);
-        // const fileNames = [];
-        // fileKeys.forEach((file) => {
-        //   const date = Date.now();
-        //   renameSync(
-        //     req.files[file].path,
-        //     "uploads/" + date + req.files[file].originalname
-        //   );
-        //   fileNames.push(date + req.files[file].originalname);
-        // });
         const fileNames = req.files.map(file => file.path);
         if (req.query) {
           const {
@@ -64,7 +54,6 @@ export const addGig = async (req, res, next) => {
   export const getUserAuthGigs = async (req, res, next) => {
     try {
       if (req.userId) {
-        // const prisma = new PrismaClient();
         const user = await prisma.user.findUnique({
           where: { id: req.userId },
           include: { gigs: true },
@@ -81,7 +70,6 @@ export const addGig = async (req, res, next) => {
   export const getGigData = async (req, res, next) => {
     try {
       if (req.params.gigid) {
-        // const prisma = new PrismaClient();
         const gig=await prisma.gigs.findUnique({
           where:{id:parseInt(req.params.gigid)},
           include: {
@@ -103,20 +91,8 @@ export const addGig = async (req, res, next) => {
   };
 
   export const editGig = async (req, res, next) => {
-      // console.log(req.params.gigid);
-      // console.log(req.params.gigId);
     try {
       if (req.files) {
-        // const fileKeys = Object.keys(req.files);
-        // const fileNames = [];
-        // fileKeys.forEach((file) => {
-        //   const date = Date.now();
-        //   renameSync(
-        //     req.files[file].path,
-        //     "uploads/" + date + req.files[file].originalname
-        //   );
-        //   fileNames.push(date + req.files[file].originalname);
-        // });
         const fileNames =req.files.map(file => file.path);
         if (req.query) {
           const {
@@ -125,11 +101,9 @@ export const addGig = async (req, res, next) => {
             category,
             features,
             price,
-            // revisions,
             time,
             shortDesc,
           } = req.query;
-          // const prisma = new PrismaClient();
           const oldData = await prisma.gigs.findUnique({
             where: { id: parseInt(req.params.gigid) },
           });
@@ -143,17 +117,12 @@ export const addGig = async (req, res, next) => {
               features,
               price: parseInt(price),
               shortDesc,
-              // revisions: parseInt(revisions),
               createdBy: { connect: { id: parseInt(req.userId) } },
               images: fileNames,
             },
           });
-          // oldData?.images.forEach((image) => {
-          //   if (existsSync(`uploads/${image}`)) unlinkSync(`uploads/${image}`);
-          // });
             if (oldData?.images?.length > 0) {
         oldData.images.forEach(imageUrl => {
-          // Extract public_id from the Cloudinary URL
           const publicId = extractPublicId(imageUrl);
           if (publicId) {
             cloudinary.uploader.destroy(publicId, (error, result) => {
@@ -162,7 +131,6 @@ export const addGig = async (req, res, next) => {
           }
         });
       }
-  
           return res.status(201).send("Successfully Eited the gig.");
         }
       }
@@ -176,9 +144,6 @@ export const addGig = async (req, res, next) => {
   export const searchGigs = async (req, res, next) => {
     try {
       if (req.query.searchTerm || req.query.category) {
-        // const prisma = new PrismaClient();
-        // console.log(req.query.searchTerm," ")
-        // console.log(req.query.category," ")
         const gigs = await prisma.gigs.findMany(
           createSearchQuery(req.query.searchTerm, req.query.category)
         );
@@ -220,7 +185,6 @@ export const addGig = async (req, res, next) => {
 
   const checkOrder = async (userId, gigId) => {
     try {
-      // const prisma = new PrismaClient();
       const hasUserOrderedGig = await prisma.orders.findFirst({
         where: {
           buyerId: parseInt(userId),
@@ -254,9 +218,7 @@ export const addGig = async (req, res, next) => {
     try {
       if (req.userId && req.params.gigId) {
         if (await checkOrder(req.userId, req.params.gigId)) {
-          // console.log("req.body.reviewText")
           if (req.body.reviewText && req.body.rating) {
-            // const prisma = new PrismaClient();
             const newReview = await prisma.reviews.create({
               data: {
                 rating: req.body.rating,
@@ -284,10 +246,8 @@ export const addGig = async (req, res, next) => {
   };
 
   export const adminData = async (req, res, next) => {
-    // console.log(req)
     try {
       if (req.userId) {
-        // console.log(req.userId)
         const user = await prisma.gigs.findMany({
           select: {
             id:true,
