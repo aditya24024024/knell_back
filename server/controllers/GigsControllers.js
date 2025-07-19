@@ -295,7 +295,7 @@ export const addGig = async (req, res, next) => {
             category: true,
         },
         orderBy: {
-          gigId: 'asc',
+          id: 'asc',
         },});
         return res.status(200).json({ gigs: user ?? [] });
       }
