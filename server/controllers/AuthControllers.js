@@ -1,4 +1,3 @@
-// import { Prisma , PrismaClient } from "@prisma/client";
 import prisma from "../Prisma_client.js";
 import { compare } from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -7,8 +6,8 @@ import { v2 as cloudinary } from "cloudinary";
 function extractPublicId(url) {
   try {
     const parts = url.split("/");
-    const publicIdWithExt = parts.slice(-2).join("/"); // e.g., "gigs/filename.jpg"
-    const publicId = publicIdWithExt.replace(/\.[^/.]+$/, ""); // remove extension
+    const publicIdWithExt = parts.slice(-2).join("/");
+    const publicId = publicIdWithExt.replace(/\.[^/.]+$/, "");
     return publicId;
   } catch {
     return null;
@@ -190,6 +189,27 @@ if (publicId) {
     res.status(500).send("Internal Server Occured");
   }
 };
+
+export const allUsers = async (req, res, next) => {
+    try {
+      if (req.userId) {
+        const user = await prisma.user.findMany({
+          select: {
+            id:true,
+            email: true,
+            username: true,
+        },
+        orderBy: {
+          id: 'asc',
+        },});
+        return res.status(200).json({ users: user ?? [] });
+      }
+      return res.status(400).send("UserId of admin should be required.");
+    } catch (err) {
+      console.log(err);
+      return res.status(500).send("Internal Server Error");
+    }
+  };
 
 export const logout = (req, res) => {
   res.clearCookie('jwt', {
