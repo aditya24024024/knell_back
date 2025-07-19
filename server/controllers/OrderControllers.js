@@ -170,7 +170,7 @@ export const createOrder = async (req, res, next) => {
       if (req.userId) {
         const orders = await prisma.orders.findMany({
         orderBy: {
-          orderId: 'asc',
+          id: 'asc',
         },
       });
         return res.status(200).json({ orders });
