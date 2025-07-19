@@ -266,12 +266,12 @@ const deletegigimages = async (gigId) => {
           }
         });
       }
-      return res.status(200).send("Cloud images deleted.");
+      return "Cloud images deleted.";
       }
-      return res.status(400).send("UserId should be required.");
+      return "UserId should be required.";
     } catch (err) {
       console.log(err);
-      return res.status(500).send("Internal Server Error");
+      return "Internal Server Error";
     }
   };
 
