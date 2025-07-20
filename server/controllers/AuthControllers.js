@@ -120,9 +120,6 @@ export const setUserInfo = async (req, res, next) => {
   try {
     if (req?.userId) {
       const { username, fullName, description } = req.body;
-      console.log(description);
-      console.log(fullName);
-      console.log(username);
       if (username && fullName && description) {
         const usernameValid = await prisma.user.findUnique({
           where: { username: username },
@@ -141,10 +138,9 @@ export const setUserInfo = async (req, res, next) => {
         });
         return res.status(200).send("Profile data updated successfully.");
       } else {
-        console.log("ufbdskjf");
         return res
           .status(200)
-          .send("Username, Full Name and description should be included.");
+          .send({emptyFieldError: true});
       }
     }
   } catch (err) {
