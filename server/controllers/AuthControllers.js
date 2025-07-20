@@ -213,14 +213,12 @@ export const allUsers = async (req, res, next) => {
 
   export const verifyUser = async (req, res) => {
   try {
-    const userIdToVerify = req.query.userIdToVerify;
-
+    const { userIdToVerify } = req.body; // ✅ read from req.body
 
     if (!userIdToVerify) {
       return res.status(400).send("User ID is required for verification.");
     }
 
-    // Optional: check if requester is admin
     const admin = await prisma.user.findUnique({
       where: { id: req.userId },
     });
@@ -229,7 +227,6 @@ export const allUsers = async (req, res, next) => {
       return res.status(403).send("You are not authorized to verify users.");
     }
 
-    // Update the user to mark as verified
     await prisma.user.update({
       where: { id: userIdToVerify },
       data: { isSocialLogin: true },
@@ -241,6 +238,7 @@ export const allUsers = async (req, res, next) => {
     return res.status(500).send("Internal Server Error");
   }
 };
+
 
 
 export const deleteUser = async (req, res, next) => {
