@@ -191,25 +191,29 @@ if (publicId) {
 };
 
 export const allUsers = async (req, res, next) => {
-    try {
-      if (req.userId) {
-        const user = await prisma.user.findMany({
-          select: {
-            id:true,
-            email: true,
-            username: true,
+  try {
+    if (req.userId) {
+      const user = await prisma.user.findMany({
+        select: {
+          id: true,
+          email: true,
+          username: true,
+          isSocialLogin: false, // ✅ Add this line
         },
         orderBy: {
           id: 'asc',
-        },});
-        return res.status(200).json({ users: user ?? [] });
-      }
-      return res.status(400).send("UserId of admin should be required.");
-    } catch (err) {
-      console.log(err);
-      return res.status(500).send("Internal Server Error");
+        },
+      });
+
+      return res.status(200).json({ users: user ?? [] });
     }
-  };
+    return res.status(400).send("UserId of admin should be required.");
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send("Internal Server Error");
+  }
+};
+
 
   export const verifyUser = async (req, res) => {
   try {
