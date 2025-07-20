@@ -89,7 +89,7 @@ export const login = async (req, res, next) => {
   }
 };
 
-export const getUserInfo=async (req,res,next)=>{
+export const getUserInfo = async (req, res, next) => {
   try {
     if (req?.userId) {
       const user = await prisma.user.findUnique({
@@ -106,13 +106,15 @@ export const getUserInfo=async (req,res,next)=>{
           fullName: user?.fullName,
           description: user?.description,
           isProfileSet: user?.isProfileInfoSet,
+          isSocialLogin: user?.isSocialLogin, // ✅ Add this line
         },
       });
     }
   } catch (err) {
-    res.status(500).send("Internal Server Occured");
+    res.status(500).send("Internal Server Occurred");
   }
-}
+};
+
 
 export const setUserInfo = async (req, res, next) => {
   try {
