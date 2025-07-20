@@ -141,6 +141,7 @@ export const setUserInfo = async (req, res, next) => {
         });
         return res.status(200).send("Profile data updated successfully.");
       } else {
+        console.log("ufbdskjf");
         return res
           .status(400)
           .send("Username, Full Name and description should be included.");
