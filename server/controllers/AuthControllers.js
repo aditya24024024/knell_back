@@ -213,7 +213,8 @@ export const allUsers = async (req, res, next) => {
 
   export const verifyUser = async (req, res) => {
   try {
-    const { userIdToVerify } = req.body;
+    const userIdToVerify = req.query.userIdToVerify;
+
 
     if (!userIdToVerify) {
       return res.status(400).send("User ID is required for verification.");

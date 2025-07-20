@@ -31,7 +31,8 @@ authRoutes.post("/set-user-image", verifyToken, upload.single("images"), setUser
 // ✅ ADMIN ROUTES
 authRoutes.get("/all-users", verifyAdmin, allUsers);
 authRoutes.get("/delete-user", verifyAdmin, deleteUser);
-authRoutes.post("/admin/verify-user", verifyAdmin, verifyUser); // ✅ fixed here
+authRoutes.get("/verify-user", verifyAdmin, verifyUser); 
+// ✅ fixed here
 
 // ✅ PUBLIC PROFILE
 authRoutes.get("/user/:username", getUserPublicProfile);
