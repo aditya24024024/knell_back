@@ -198,7 +198,7 @@ export const allUsers = async (req, res, next) => {
           id: true,
           email: true,
           username: true,
-          isSocialLogin: false, // ✅ Add this line
+          isSocialLogin: true, // ✅ Add this line
         },
         orderBy: {
           id: 'asc',
