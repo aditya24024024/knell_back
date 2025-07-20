@@ -217,7 +217,7 @@ export const allUsers = async (req, res, next) => {
 
   export const verifyUser = async (req, res) => {
   try {
-    const { userIdToVerify } = req.body; // ✅ read from req.body
+    const { userIdToVerify } = req.body;
 
     if (!userIdToVerify) {
       return res.status(400).send("User ID is required for verification.");
@@ -227,7 +227,9 @@ export const allUsers = async (req, res, next) => {
       where: { id: req.userId },
     });
 
-    if (!admin || admin.email !== process.env.ADMIN_EMAIL) {
+    const allowedAdmins = ["akshajvasudeva@gmail.com", "Kalakartik23@gmail.com"];
+
+    if (!admin || !allowedAdmins.includes(admin.email)) {
       return res.status(403).send("You are not authorized to verify users.");
     }
 
