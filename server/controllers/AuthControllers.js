@@ -143,7 +143,7 @@ export const setUserInfo = async (req, res, next) => {
       } else {
         console.log("ufbdskjf");
         return res
-          .status(400)
+          .status(401)
           .send("Username, Full Name and description should be included.");
       }
     }
