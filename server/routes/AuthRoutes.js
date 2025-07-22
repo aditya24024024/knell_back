@@ -10,7 +10,8 @@ import {
   setUserImage,
   allUsers,
   deleteUser,
-  verifyUser
+  verifyUser,
+  updatePass
 } from "../controllers/AuthControllers.js";
 
 import { getUserPublicProfile } from "../controllers/UserController.js";
@@ -23,6 +24,7 @@ const upload = multer({ storage: profile });
 // ✅ AUTH ROUTES
 authRoutes.post("/signup", signup);
 authRoutes.post("/login", login);
+authRoutes.post("/forgot-password", updatePass);
 authRoutes.post("/logout", verifyToken, logout);
 authRoutes.post("/get-user-info", verifyToken, getUserInfo);
 authRoutes.post("/set-user-info", verifyToken, setUserInfo);
