@@ -51,6 +51,36 @@ export const signup = async (req, res, next) => {
   }
 };
 
+export const updatePass = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    const user = await prisma.user.update({
+      where: {
+        email,
+      },
+      data: {
+        password
+      },
+    });
+    const token = createToken(email, user.id);
+
+    res.cookie('jwt', token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'None',
+      path: '/',
+      maxAge: 3 * 24 * 60 * 60 * 1000
+    });
+    return res.status(200).json({
+      user: { id: user.id, email: user.email },
+      jwt: token,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send("Internal server error.");
+  }
+};
+
 export const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
