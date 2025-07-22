@@ -110,6 +110,56 @@ export const send_otp = async (req, res) => {
   }
 };
 
+export const forgot_send_otp = async (req, res) => {
+  const { email, password } = req.body;
+  const otp = crypto.randomInt(100000, 999999).toString();
+  const expires = Date.now() + 5 * 60 * 1000;
+
+  try {
+
+    const existing_user = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!existing_user) {
+      return res.status(501).send("User does not exist.");
+    }
+    const unverified_mail = await prisma.otp.findUnique({
+      where: { email },
+    });
+
+    if (unverified_mail) {
+      const user = await prisma.otp.update({
+        where: { email },
+        data: {
+          password: await generatePassword(password),
+          code: otp,
+          expiresAt: new Date(expires),
+        },
+      });
+      await sendOtpEmail(email, otp);
+      return res.status(200).json({
+        user: { id: user.id, email: user.email },
+      });
+    }
+    const user = await prisma.otp.create({
+      data: {
+        email,
+        password: await generatePassword(password),
+        code: otp,
+        expiresAt: new Date(expires),
+      },
+    });
+    await sendOtpEmail(email, otp);
+    return res.status(200).json({
+      user: { id: user.id, email: user.email },
+    });
+  } catch (error) {
+    console.error("Failed to send OTP:", error);
+    res.status(500).json("Error sending OTP");
+  }
+};
+
 export const verify_otp = async (req, res) => {
   const { email, otp } = req.body;
   const dataa = await prisma.otp.findUnique({
