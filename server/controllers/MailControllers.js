@@ -59,6 +59,32 @@ If you didn’t request this, please ignore the message.
   await transporter.sendMail(mailOptions);
 }
 
+async function sendResetOtpEmail(to, otp) {
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to,
+    subject: "Your Knell Sign-Up OTP",
+//     text: `Dear user,
+
+// We received a request to reset the password of your Knell account.
+
+// Here's your OTP 👉 ${otp}
+
+// WARM REGARDS,
+// TEAM KNELL
+// href{www.knell.co.in}
+    html: `
+    <p>Dear user,</p>
+    <p>We received a request to reset the password of your Knell account.</p>
+    <p><strong>Here's your OTP 👉 ${otp}</strong></p>
+    <p>Warm regards,<br>Team Knell</p>
+    <p>Visit<a href="https://www.knell.co.in" target="_blank"> www.knell.co.in</a></p>
+  `
+  };
+
+  await transporter.sendMail(mailOptions);
+}
+
 export const send_otp = async (req, res) => {
   const { email, password } = req.body;
   const otp = crypto.randomInt(100000, 999999).toString();
@@ -137,7 +163,7 @@ export const forgot_send_otp = async (req, res) => {
           expiresAt: new Date(expires),
         },
       });
-      await sendOtpEmail(email, otp);
+      await sendResetOtpEmail(email, otp);
       return res.status(200).json({
         user: { id: user.id, email: user.email },
       });
@@ -150,7 +176,7 @@ export const forgot_send_otp = async (req, res) => {
         expiresAt: new Date(expires),
       },
     });
-    await sendOtpEmail(email, otp);
+    await sendResetOtpEmail(email, otp);
     return res.status(200).json({
       user: { id: user.id, email: user.email },
     });
