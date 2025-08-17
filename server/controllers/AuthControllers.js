@@ -14,7 +14,7 @@ function extractPublicId(url) {
   }
 }
 
-const maxAge = 3 * 24 * 60 * 60*1000;
+const maxAge = 7 * 24 * 60 * 60*1000;
 
 const createToken = (email, userId) => {
   return jwt.sign({ email, userId }, process.env.JWT_KEY, { expiresIn: maxAge });
@@ -37,7 +37,7 @@ export const signup = async (req, res, next) => {
   secure: true,
   sameSite: 'None',
   path: '/',
-  maxAge: 3 * 24 * 60 * 60 * 1000
+  maxAge: 7 * 24 * 60 * 60 * 1000
 });
 
       
@@ -69,7 +69,7 @@ export const updatePass = async (req, res, next) => {
       secure: true,
       sameSite: 'None',
       path: '/',
-      maxAge: 3 * 24 * 60 * 60 * 1000
+      maxAge: 7 * 24 * 60 * 60 * 1000
     });
     return res.status(200).json({
       user: { id: user.id, email: user.email },
@@ -105,7 +105,7 @@ export const login = async (req, res, next) => {
   secure: true,
   sameSite: 'None',
   path: '/',
-  maxAge: 3 * 24 * 60 * 60 * 1000
+  maxAge: 7 * 24 * 60 * 60 * 1000
 });
     
       return res.status(200).json({
