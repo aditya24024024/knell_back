@@ -8,12 +8,13 @@ const generatePassword = async (password) => {
   return await hash(password, salt);
 };
 
-const transporter = nodemailer.createTransport(
-  { 
-    service: "gmail",
-    auth: { user: process.env.EMAIL_USER, 
-          pass: process.env.EMAIL_PASS, },
-  });
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
 
 export const send_mail = async (to) => {
   const mailOptions = {
@@ -54,7 +55,6 @@ If you didn’t request this, please ignore the message.
 
 – Team Knell 🟢`,
   };
-
   await transporter.sendMail(mailOptions);
 }
 
