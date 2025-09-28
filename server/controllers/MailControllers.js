@@ -131,7 +131,7 @@ export const accept_mail = async (to) => {
     const data = await resend.emails.send({
       from: 'Knell <no-reply@knell.co.in>',
       to: to,
-      subject: 'Your Knell signup OTP',
+      subject: 'Your request got accepted',
       html: `<style>
     body {
       margin: 0;
@@ -172,7 +172,7 @@ async function sendResetOtpEmail(to, otp) {
     const data = await resend.emails.send({
       from: 'Knell <no-reply@knell.co.in>',
       to: to,
-      subject: 'Your Knell signup OTP',
+      subject: 'Your Password Reset OTP',
       html: ` <style>
     body {
       margin: 0;
@@ -206,7 +206,7 @@ async function sendResetOtpEmail(to, otp) {
 
   <p>We received a request to reset the password of your Knell account.</p>
 
-  <p>Here's your OTP 👉 <span class="otp">{otp}</span></p>
+  <p>Here's your OTP 👉 <span class="otp">${otp}</span></p>
 
   <p>Warm regards,<br>
   Team Knell</p>
