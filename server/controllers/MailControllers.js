@@ -61,7 +61,7 @@ async function sendOtpEmail(to, otp) {
   </table>
 </body>`,
     });
-    console.log('Email sent:', data);
+    // console.log('Email sent:', data);
   } catch (error) {
     console.error('Resend Error:', error);
   }
@@ -82,33 +82,94 @@ const transporter = nodemailer.createTransport({
 });
 
 export const send_mail = async (to) => {
-  const mailOptions = {
-    from: process.env.EMAIL_USER,
-    to,
-    subject: "🎉 You’ve received a new booking on Knell!",
-    text: `You’ve received a new booking request on Knell!
+  try {
+    const data = await resend.emails.send({
+      from: 'Knell <no-reply@knell.co.in>',
+      to: to,
+      subject: 'You received a new booking',
+      html: `  <style>
+    body {
+      margin: 0;
+      padding: 40px 20px;
+      background: #0f172a; /* dark background */
+      color: #ffffff;      /* white text */
+      font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+    .highlight {
+      display: inline-block;
+      padding: 12px 20px;
+      background: #1f2937;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 18px;
+      color: #ffffff;
+    }
+    a {
+      color: #ffffff;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <p class="highlight">🎉 You’ve received a new booking on Knell!</p>
 
-Check on your seller dashboard to see the order details!`,
-  };
-  await transporter.sendMail(mailOptions);
+  <p>Check your seller dashboard to see more details.</p>
+
+  <p>- Team Knell</p>
+</body>`,
+    });
+    // console.log('Email sent:', data);
+  } catch (error) {
+    console.error('Resend Error:', error);
+  }
 };
 
 export const accept_mail = async (to) => {
-  const mailOptions = {
-    from: process.env.EMAIL_USER,
-    to,
-    subject: "🎉 Your request got accepted!",
-    text: `Your request got accepted by the service provider!
+  try {
+    const data = await resend.emails.send({
+      from: 'Knell <no-reply@knell.co.in>',
+      to: to,
+      subject: 'Your Knell signup OTP',
+      html: `<style>
+    body {
+      margin: 0;
+      padding: 40px 20px;
+      background: #0f172a; /* dark background */
+      color: #ffffff;      /* white text */
+      font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+    .highlight {
+      display: inline-block;
+      padding: 12px 20px;
+      background: #1f2937;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 18px;
+      color: #ffffff;
+    }
+  </style>
+</head>
+<body>
+  <p class="highlight">🎉 Your request got accepted!</p>
 
-Check on your buyer dashboard to see the order details!`,
-  };
-  await transporter.sendMail(mailOptions);
+  <p>Check your buyer dashboard to see more details.</p>
+
+  <p>- Team Knell</p>
+</body>`,
+    });
+    // console.log('Email sent:', data);
+  } catch (error) {
+    console.error('Resend Error:', error);
+  }
 };
 
 async function sendResetOtpEmail(to, otp) {
    try {
     const data = await resend.emails.send({
-      // from: 'Your App <onboarding@resend.dev>', // or your verified domain
       from: 'Knell <no-reply@knell.co.in>',
       to: to,
       subject: 'Your Knell signup OTP',
@@ -153,7 +214,7 @@ async function sendResetOtpEmail(to, otp) {
   <p>Visit <a href="https://www.knell.co.in" target="_blank">www.knell.co.in</a></p>
 </body>`,
     });
-    console.log('Email sent:', data);
+    // console.log('Email sent:', data);
   } catch (error) {
     console.error('Resend Error:', error);
   }
