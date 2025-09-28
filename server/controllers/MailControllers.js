@@ -2,6 +2,25 @@ import nodemailer from "nodemailer";
 import crypto from "crypto";
 import prisma from "../Prisma_client.js";
 import { genSalt, hash } from "bcrypt";
+import { Resend } from 'resend';
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+async function sendOtpEmail(to, otp) {
+  try {
+    const data = await resend.emails.send({
+      // from: 'Your App <onboarding@resend.dev>', // or your verified domain
+      from: 'Knell <no-reply@knell.co.in>',
+      to: 'akshajvasudeva@gmail.com',
+      subject: 'Your OTP Code',
+      html: `<p>Your OTP is <strong>${otp}</strong></p>`,
+    });
+    console.log('Email sent:', data);
+  } catch (error) {
+    console.error('Resend Error:', error);
+  }
+}
+
 
 const generatePassword = async (password) => {
   const salt = await genSalt(10);
@@ -40,23 +59,23 @@ Check on your buyer dashboard to see the order details!`,
   await transporter.sendMail(mailOptions);
 };
 
-async function sendOtpEmail(to, otp) {
-  const mailOptions = {
-    from: process.env.EMAIL_USER,
-    to,
-    subject: "Your Knell Sign-Up OTP",
-    text: `Your Knell Sign-Up code is: ${otp}
+// async function sendOtpEmail(to, otp) {
+//   const mailOptions = {
+//     from: process.env.EMAIL_USER,
+//     to,
+//     subject: "Your Knell Sign-Up OTP",
+//     text: `Your Knell Sign-Up code is: ${otp}
 
-Enter this OTP to complete your Sign-Up process.
+// Enter this OTP to complete your Sign-Up process.
 
-This code is valid for 5 minutes.
+// This code is valid for 5 minutes.
 
-If you didn’t request this, please ignore the message.
+// If you didn’t request this, please ignore the message.
 
-– Team Knell 🟢`,
-  };
-  await transporter.sendMail(mailOptions);
-}
+// – Team Knell 🟢`,
+//   };
+//   await transporter.sendMail(mailOptions);
+// }
 
 async function sendResetOtpEmail(to, otp) {
   const mailOptions = {
