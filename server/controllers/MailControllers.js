@@ -10,7 +10,7 @@ async function sendOtpEmail(to, otp) {
   try {
     const data = await resend.emails.send({
       // from: 'Your App <onboarding@resend.dev>', // or your verified domain
-      from: '<no-reply@knell.co.in>',
+      from: 'Knell <no-reply@knell.co.in>',
       to: to,
       subject: 'Your OTP Code',
       html: ` <div class="preheader">Enter this OTP to complete your Knell sign-up — code valid for 5 minutes.</div>
@@ -75,7 +75,7 @@ async function sendOtpEmail(to, otp) {
     </tr>
   </table>`,
     });
-    // console.log('Email sent:', data);
+    console.log('Email sent:', data);
   } catch (error) {
     console.error('Resend Error:', error);
   }
