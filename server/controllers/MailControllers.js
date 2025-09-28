@@ -13,15 +13,67 @@ async function sendOtpEmail(to, otp) {
       from: '<no-reply@knell.co.in>',
       to: to,
       subject: 'Your OTP Code',
-      html: `<p>Your Knell Sign-Up code is: <strong>${otp}</strong>
+      html: ` <div class="preheader">Enter this OTP to complete your Knell sign-up — code valid for 5 minutes.</div>
 
-Enter this OTP to complete your Sign-Up process.
+  <!-- Outer wrapper -->
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f6f8; padding: 30px 16px;">
+    <tr>
+      <td align="center">
 
-This code is valid for 5 minutes.
+        <!-- Email container -->
+        <table role="presentation" class="email-container" cellpadding="0" cellspacing="0" width="100%">
+          <!-- Header / Brand -->
+          <tr>
+            <td style="background:#0f172a; color: #ffffff; padding: 18px 24px; text-align: left;">
+              <!-- You can replace this text with an <img> logo if you have one -->
+              <span class="brand">Knell <span aria-hidden="true">🟢</span></span>
+            </td>
+          </tr>
 
-If you didn’t request this, please ignore the message.
+          <!-- Body -->
+          <tr>
+            <td class="content">
+              <p style="margin:0 0 12px 0;">Your Knell Sign-Up code is:</p>
 
-– Team Knell 🟢 </p>`,
+              <!-- OTP box (uses the placeholder provided by you) -->
+              <div role="text" aria-label="One time passcode" class="otp-box">
+                <strong>${otp}</strong>
+              </div>
+
+              <p style="margin: 8px 0 18px 0;">Enter this OTP to complete your Sign-Up process.</p>
+
+              <p class="note" style="margin:0 0 12px 0;">
+                This code is valid for <strong>5 minutes</strong>.
+              </p>
+
+              <p class="note" style="margin:0 0 20px 0;">
+                If you didn’t request this, please ignore the message.
+              </p>
+
+              <!-- Optional CTA (visible fallback) -->
+              <p style="margin:0;">
+                <a href="#" class="button" aria-label="Complete sign up">Complete Sign-Up</a>
+              </p>
+
+              <div class="spacer" aria-hidden="true"></div>
+
+              <p class="note" style="margin:0;">– Team Knell <span aria-hidden="true">🟢</span></p>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td class="footer" style="background:#ffffff;">
+              <div>Knell • <span>support@knell.example</span></div>
+              <div style="margin-top:6px;">Please do not share this code with anyone.</div>
+            </td>
+          </tr>
+        </table>
+        <!-- End container -->
+
+      </td>
+    </tr>
+  </table>`,
     });
     // console.log('Email sent:', data);
   } catch (error) {
