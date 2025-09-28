@@ -13,7 +13,31 @@ async function sendOtpEmail(to, otp) {
       from: 'Knell <no-reply@knell.co.in>',
       to: to,
       subject: 'Your OTP Code',
-      html: ` <div class="preheader">Enter this OTP to complete your Knell sign-up — code valid for 5 minutes.</div>
+      html: ` <style>
+    /* Basic mobile-friendly resets (some clients ignore these) */
+    body { margin: 0; padding: 0; background-color: #f4f6f8; -webkit-text-size-adjust: 100%; }
+    table { border-collapse: collapse; }
+    img { border: 0; line-height: 100%; outline: none; text-decoration: none; }
+    a { color: inherit; text-decoration: none; }
+    /* Container */
+    .email-container { width: 100%; max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 8px; overflow: hidden; }
+    .spacer { height: 24px; }
+    .content { padding: 28px; font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; color: #111827; font-size: 16px; line-height: 1.45; }
+    .preheader { display: none !important; visibility: hidden; mso-hide: all; font-size: 1px; line-height: 1px; max-height: 0; max-width: 0; opacity: 0; overflow: hidden; }
+    .brand { font-weight: 700; color: #0f172a; font-size: 20px; }
+    .otp-box { display: inline-block; margin: 18px 0; padding: 14px 22px; border-radius: 8px; background: #f3f4f6; font-weight: 700; font-size: 22px; letter-spacing: 4px; font-family: "Courier New", Courier, monospace; }
+    .note { color: #6b7280; font-size: 14px; }
+    .footer { padding: 20px 28px; font-size: 13px; color: #9ca3af; text-align: center; }
+    .button { display:inline-block; padding: 10px 18px; border-radius: 6px; background: #10b981; color: white; font-weight: 600; }
+    @media (max-width: 420px) {
+      .content { padding: 18px; font-size: 15px; }
+      .otp-box { font-size: 20px; padding: 12px 18px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Preheader (visible in inbox preview) -->
+  <div class="preheader">Enter this OTP to complete your Knell sign-up — code valid for 5 minutes.</div>
 
   <!-- Outer wrapper -->
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f6f8; padding: 30px 16px;">
@@ -49,16 +73,13 @@ async function sendOtpEmail(to, otp) {
               <p class="note" style="margin:0 0 20px 0;">
                 If you didn’t request this, please ignore the message.
               </p>
-              
-              <div class="spacer" aria-hidden="true"></div>
-
               <p class="note" style="margin:0;">– Team Knell <span aria-hidden="true">🟢</span></p>
             </td>
           </tr>
-        </table>
       </td>
     </tr>
-  </table>`,
+  </table>
+</body>`,
     });
     console.log('Email sent:', data);
   } catch (error) {
