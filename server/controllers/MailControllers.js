@@ -145,7 +145,7 @@ async function sendResetOtpEmail(to, otp) {
 
   <p>We received a request to reset the password of your Knell account.</p>
 
-  <p>Here's your OTP 👉 <span class="otp">669363</span></p>
+  <p>Here's your OTP 👉 <span class="otp">{otp}</span></p>
 
   <p>Warm regards,<br>
   Team Knell</p>
