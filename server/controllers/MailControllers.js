@@ -12,7 +12,7 @@ async function sendOtpEmail(to, otp) {
       // from: 'Your App <onboarding@resend.dev>', // or your verified domain
       from: 'Knell <no-reply@knell.co.in>',
       to: to,
-      subject: 'Your OTP Code',
+      subject: 'Your Knell signup OTP',
       html: ` <style>
     body { margin:0; padding:0; background:#0f172a; -webkit-text-size-adjust:100%; }
     table { border-collapse:collapse; }
@@ -34,14 +34,7 @@ async function sendOtpEmail(to, otp) {
       <td align="center">
 
         <table role="presentation" class="email-container" cellpadding="0" cellspacing="0" width="100%">
-          <!-- Header -->
-          <tr>
-            <td style="padding:18px 24px; text-align:left;">
-              <span class="brand">Knell 🟢</span>
-            </td>
-          </tr>
 
-          <!-- Body -->
           <tr>
             <td class="content">
               <p>Your Knell Sign-Up code is:</p>
