@@ -11,7 +11,7 @@ async function sendOtpEmail(to, otp) {
     const data = await resend.emails.send({
       // from: 'Your App <onboarding@resend.dev>', // or your verified domain
       from: 'Knell <no-reply@knell.co.in>',
-      to: 'akshajvasudeva@gmail.com',
+      to: to,
       subject: 'Your OTP Code',
       html: `<p>Your OTP is <strong>${otp}</strong></p>`,
     });
