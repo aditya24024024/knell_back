@@ -24,7 +24,7 @@ async function sendOtpEmail(to, otp) {
         <table role="presentation" class="email-container" cellpadding="0" cellspacing="0" width="100%">
           <!-- Header / Brand -->
           <tr>
-            <td style="background:#0f172a; color: #ffffff; padding: 18px 24px; text-align: left;">
+            <td style="background:#0f172a; color: #ffffff; padding: 12px 24px; text-align: left;">
               <!-- You can replace this text with an <img> logo if you have one -->
               <span class="brand">Knell <span aria-hidden="true">🟢</span></span>
             </td>
@@ -55,17 +55,7 @@ async function sendOtpEmail(to, otp) {
               <p class="note" style="margin:0;">– Team Knell <span aria-hidden="true">🟢</span></p>
             </td>
           </tr>
-
-          <!-- Footer -->
-          <tr>
-            <td class="footer" style="background:#ffffff;">
-              <div>Knell • <span>support@knell.example</span></div>
-              <div style="margin-top:6px;">Please do not share this code with anyone.</div>
-            </td>
-          </tr>
         </table>
-        <!-- End container -->
-
       </td>
     </tr>
   </table>`,
