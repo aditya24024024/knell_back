@@ -105,48 +105,58 @@ Check on your buyer dashboard to see the order details!`,
   await transporter.sendMail(mailOptions);
 };
 
-// async function sendOtpEmail(to, otp) {
-//   const mailOptions = {
-//     from: process.env.EMAIL_USER,
-//     to,
-//     subject: "Your Knell Sign-Up OTP",
-//     text: `Your Knell Sign-Up code is: ${otp}
-
-// Enter this OTP to complete your Sign-Up process.
-
-// This code is valid for 5 minutes.
-
-// If you didn’t request this, please ignore the message.
-
-// – Team Knell 🟢`,
-//   };
-//   await transporter.sendMail(mailOptions);
-// }
-
 async function sendResetOtpEmail(to, otp) {
-  const mailOptions = {
-    from: process.env.EMAIL_USER,
-    to,
-    subject: "Your Knell Sign-Up OTP",
-//     text: `Dear user,
+   try {
+    const data = await resend.emails.send({
+      // from: 'Your App <onboarding@resend.dev>', // or your verified domain
+      from: 'Knell <no-reply@knell.co.in>',
+      to: to,
+      subject: 'Your Knell signup OTP',
+      html: ` <style>
+    body {
+      margin: 0;
+      padding: 40px 20px;
+      background: #0f172a; /* dark background */
+      color: #ffffff;      /* white text */
+      font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+    .otp {
+      display: inline-block;
+      margin: 16px 0;
+      padding: 14px 24px;
+      background: #1f2937;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 22px;
+      letter-spacing: 3px;
+      font-family: "Courier New", Courier, monospace;
+      color: #ffffff;
+    }
+    a {
+      color: #ffffff;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <p>Dear user,</p>
 
-// We received a request to reset the password of your Knell account.
+  <p>We received a request to reset the password of your Knell account.</p>
 
-// Here's your OTP 👉 ${otp}
+  <p>Here's your OTP 👉 <span class="otp">669363</span></p>
 
-// WARM REGARDS,
-// TEAM KNELL
-// href{www.knell.co.in}
-    html: `
-    <p>Dear user,</p>
-    <p>We received a request to reset the password of your Knell account.</p>
-    <p><strong>Here's your OTP 👉 ${otp}</strong></p>
-    <p>Warm regards,<br>Team Knell</p>
-    <p>Visit<a href="https://www.knell.co.in" target="_blank"> www.knell.co.in</a></p>
-  `
-  };
+  <p>Warm regards,<br>
+  Team Knell</p>
 
-  await transporter.sendMail(mailOptions);
+  <p>Visit <a href="https://www.knell.co.in" target="_blank">www.knell.co.in</a></p>
+</body>`,
+    });
+    console.log('Email sent:', data);
+  } catch (error) {
+    console.error('Resend Error:', error);
+  }
 }
 
 export const send_otp = async (req, res) => {
