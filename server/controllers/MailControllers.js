@@ -49,12 +49,7 @@ async function sendOtpEmail(to, otp) {
               <p class="note" style="margin:0 0 20px 0;">
                 If you didn’t request this, please ignore the message.
               </p>
-
-              <!-- Optional CTA (visible fallback) -->
-              <p style="margin:0;">
-                <a href="#" class="button" aria-label="Complete sign up">Complete Sign-Up</a>
-              </p>
-
+              
               <div class="spacer" aria-hidden="true"></div>
 
               <p class="note" style="margin:0;">– Team Knell <span aria-hidden="true">🟢</span></p>
