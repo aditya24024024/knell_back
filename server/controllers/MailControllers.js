@@ -3,6 +3,7 @@ import crypto from "crypto";
 import prisma from "../Prisma_client.js";
 import { genSalt, hash } from "bcrypt";
 import { Resend } from 'resend';
+import redis from "../redis.js";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -72,14 +73,6 @@ const generatePassword = async (password) => {
   const salt = await genSalt(10);
   return await hash(password, salt);
 };
-
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
 
 export const send_mail = async (to) => {
   try {
@@ -223,48 +216,30 @@ async function sendResetOtpEmail(to, otp) {
 export const send_otp = async (req, res) => {
   const { email, password } = req.body;
   const otp = crypto.randomInt(100000, 999999).toString();
-  const expires = Date.now() + 5 * 60 * 1000;
 
   try {
 
     const existing_user = await prisma.user.findUnique({
       where: { email },
     });
-
     if (existing_user) {
       return res.status(501).send("User already exist.");
     }
-    const unverified_mail = await prisma.otp.findUnique({
-      where: { email },
-    });
-
-    if (unverified_mail) {
-      const user = await prisma.otp.update({
-        where: { email },
-        data: {
-          password: await generatePassword(password),
-          code: otp,
-          expiresAt: new Date(expires),
-        },
-      });
-      await sendOtpEmail(email, otp);
-      return res.status(200).json({
-        user: { id: user.id, email: user.email },
-      });
-    }
-    const user = await prisma.otp.create({
-      data: {
+    
+    await redis.set(
+      `otp:${email}`,
+      JSON.stringify({
         email,
         password: await generatePassword(password),
         code: otp,
-        expiresAt: new Date(expires),
-      },
-    });
+      }),
+      "EX",
+      300
+    );
     await sendOtpEmail(email, otp);
     return res.status(200).json({
-      user: { id: user.id, email: user.email },
+      user: {email:email },
     });
-    // res.status(200).json({ message: "OTP sent" });
   } catch (error) {
     console.error("Failed to send OTP:", error);
     res.status(500).json("Error sending OTP");
@@ -281,39 +256,22 @@ export const forgot_send_otp = async (req, res) => {
     const existing_user = await prisma.user.findUnique({
       where: { email },
     });
-
     if (!existing_user) {
       return res.status(501).send("User does not exist.");
     }
-    const unverified_mail = await prisma.otp.findUnique({
-      where: { email },
-    });
-
-    if (unverified_mail) {
-      const user = await prisma.otp.update({
-        where: { email },
-        data: {
-          password: await generatePassword(password),
-          code: otp,
-          expiresAt: new Date(expires),
-        },
-      });
-      await sendResetOtpEmail(email, otp);
-      return res.status(200).json({
-        user: { id: user.id, email: user.email },
-      });
-    }
-    const user = await prisma.otp.create({
-      data: {
+    await redis.set(
+      `otp:${email}`,
+      JSON.stringify({
         email,
         password: await generatePassword(password),
         code: otp,
-        expiresAt: new Date(expires),
-      },
-    });
+      }),
+      "EX",
+      300
+    );
     await sendResetOtpEmail(email, otp);
     return res.status(200).json({
-      user: { id: user.id, email: user.email },
+      user: { email: user.email },
     });
   } catch (error) {
     console.error("Failed to send OTP:", error);
@@ -323,26 +281,16 @@ export const forgot_send_otp = async (req, res) => {
 
 export const verify_otp = async (req, res) => {
   const { email, otp } = req.body;
-  const dataa = await prisma.otp.findUnique({
-    where: { email },
-  })
+  const dataa = await redis.get(`otp:${email}`);
 
   if (!dataa) {
-    return res.status(400).json("OTP not found. Please signup again.");
+    return res.status(400).json("OTP not found. Please try again.");
   }
 
-  if (Date.now() > dataa.expiresAt) {
-    await prisma.otp.delete({
-      where: { email },
-    },);
-    return res.status(401).json("OTP expired. Please signup again.");
-  }
-
-  if (otp !== dataa.code) {
+  const { code: savedOtp } = JSON.parse(dataa);
+  if (savedOtp !== otp) {
     return res.status(402).json("Invalid OTP");
   }
-  await prisma.otp.delete({
-    where: { email },
-  },);
-  return res.status(200).json(dataa);
+  await redis.del(`otp:${email}`);
+  return res.status(200).json(JSON.parse(dataa));
 };
