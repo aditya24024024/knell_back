@@ -44,11 +44,16 @@ io.on("connection", (socket) => {
 
 app.use(
   cors({
-    origin: [process.env.PUBLIC_URL],
+    origin: [
+      "https://www.knell.co.in",
+      "https://knell.co.in",
+      "http://localhost:3000",
+    ],
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     credentials: true,
   })
 );
+
 app.use(cookieParser());
 app.use(express.json());
 
