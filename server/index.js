@@ -11,6 +11,7 @@ import { orderRoutes } from "./routes/OrderRoutes.js";
 import { messageRoutes } from "./routes/MessagesRoutes.js";
 import { dashboardRoutes } from "./routes/DashboardRoutes.js";
 import { mailRoutes } from "./routes/MailRoutes.js";
+import { detectCurrency } from "./middlewares/currencyMiddleware.js"; // ✅ renamed correctly
 
 dotenv.config();
 
@@ -51,6 +52,9 @@ app.use(
 app.use(cookieParser());
 app.use(express.json());
 
+// ✅ Add this middleware before routes (so all routes get currency info)
+app.use(detectCurrency);
+
 app.use("/uploads", express.static("uploads"));
 app.use("/uploads/profiles", express.static("uploads/profiles"));
 
@@ -60,6 +64,11 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/otp", mailRoutes);
+
+// ✅ Optional endpoint for testing currency detection
+app.get("/api/currency", (req, res) => {
+  res.json(req.currency);
+});
 
 server.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);
