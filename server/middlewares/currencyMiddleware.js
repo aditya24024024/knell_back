@@ -1,27 +1,39 @@
-import geoip from "geoip-lite";
+import axios from "axios";
 
-const currencyMap = {
-  IN: { symbol: "₹", code: "INR", rate: 1 },
-  US: { symbol: "$", code: "USD", rate: 0.012 },
-  GB: { symbol: "£", code: "GBP", rate: 0.0096 },
-  EU: { symbol: "€", code: "EUR", rate: 0.011 },
-  // add more if needed
-};
-
-export const detectCurrency = (req, res, next) => {
+export const currencyMiddleware = async (req, res, next) => {
   try {
-    const ip =
-      req.headers["x-forwarded-for"]?.split(",")[0] ||
-      req.connection.remoteAddress;
+    const forwardedFor = req.headers["x-forwarded-for"];
+    const clientIp =
+      (forwardedFor && forwardedFor.split(",")[0]) || req.socket.remoteAddress;
 
-    const geo = geoip.lookup(ip);
-    const countryCode = geo?.country || "IN"; // default to India
+    let country = "IN";
+    let currency = "INR";
 
-    req.currency = currencyMap[countryCode] || currencyMap["IN"];
+    // 🔍 Use ipapi.co (no API key needed)
+    const { data } = await axios.get(`https://ipapi.co/${clientIp}/json/`);
+    if (data && data.country_code) {
+      country = data.country_code;
+    }
+
+    // 🌍 map common countries to their currencies
+    const currencyMap = {
+      US: "USD",
+      GB: "GBP",
+      AE: "AED",
+      EU: "EUR",
+      CA: "CAD",
+      AU: "AUD",
+    };
+
+    if (currencyMap[country]) {
+      currency = currencyMap[country];
+    }
+
+    req.userCurrency = currency;
     next();
   } catch (err) {
-    console.error("Currency detection error:", err);
-    req.currency = currencyMap["IN"];
+    console.error("Currency detection failed:", err.message);
+    req.userCurrency = "INR";
     next();
   }
 };

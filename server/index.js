@@ -53,7 +53,8 @@ app.use(cookieParser());
 app.use(express.json());
 
 // ✅ Add this middleware before routes (so all routes get currency info)
-app.use(detectCurrency);
+
+app.use(currencyMiddleware);
 
 app.use("/uploads", express.static("uploads"));
 app.use("/uploads/profiles", express.static("uploads/profiles"));
