@@ -11,17 +11,41 @@ import { orderRoutes } from "./routes/OrderRoutes.js";
 import { messageRoutes } from "./routes/MessagesRoutes.js";
 import { dashboardRoutes } from "./routes/DashboardRoutes.js";
 import { mailRoutes } from "./routes/MailRoutes.js";
-import { detectCurrency } from "./middlewares/currencyMiddleware.js"; // ✅ renamed correctly
+import { currencyMiddleware } from "./middlewares/currencyMiddleware.js";
 
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3001;
 
+const allowedOrigins = [
+  "https://www.knell.co.in",
+  "https://knell.co.in",
+  "http://localhost:3000",
+];
+
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin);
+  }
+  res.header("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.header("Access-Control-Allow-Credentials", "true");
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(204);
+  }
+  next();
+});
+
+// ✅ Use express.json AFTER CORS
+app.use(express.json());
+app.use(cookieParser());
+
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: [process.env.PUBLIC_URL],
+    origin: allowedOrigins,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     credentials: true,
   },
@@ -33,7 +57,6 @@ io.on("connection", (socket) => {
   console.log("Socket connected:", socket.id);
 
   socket.on("join", (userId) => {
-    console.log(`User ${userId} joined their room`);
     socket.join(userId.toString());
   });
 
@@ -41,25 +64,6 @@ io.on("connection", (socket) => {
     console.log("Socket disconnected:", socket.id);
   });
 });
-
-app.use(
-  cors({
-    origin: [
-      "https://www.knell.co.in",
-      "https://knell.co.in",
-      "http://localhost:3000",
-    ],
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-    credentials: true,
-  })
-);
-
-app.use(cookieParser());
-app.use(express.json());
-
-// ✅ Add this middleware before routes (so all routes get currency info)
-
-app.use(currencyMiddleware);
 
 app.use("/uploads", express.static("uploads"));
 app.use("/uploads/profiles", express.static("uploads/profiles"));
@@ -70,11 +74,7 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/otp", mailRoutes);
-
-// ✅ Optional endpoint for testing currency detection
-app.get("/api/currency", (req, res) => {
-  res.json(req.currency);
-});
+app.use(currencyMiddleware);
 
 server.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);
