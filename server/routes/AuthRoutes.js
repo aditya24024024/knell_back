@@ -11,7 +11,8 @@ import {
   allUsers,
   deleteUser,
   verifyUser,
-  updatePass
+  updatePass,
+  setUserName
 } from "../controllers/AuthControllers.js";
 
 import { getUserPublicProfile } from "../controllers/UserController.js";
@@ -29,6 +30,7 @@ authRoutes.post("/logout", verifyToken, logout);
 authRoutes.post("/get-user-info", verifyToken, getUserInfo);
 authRoutes.post("/set-user-info", verifyToken, setUserInfo);
 authRoutes.post("/set-user-image", verifyToken, upload.single("images"), setUserImage);
+authRoutes.post("/set-username", verifyToken, setUserName);
 
 // ✅ ADMIN ROUTES
 authRoutes.get("/all-users", verifyAdmin, allUsers);
