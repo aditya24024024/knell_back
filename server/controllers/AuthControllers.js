@@ -185,6 +185,41 @@ export const setUserInfo = async (req, res, next) => {
   }
 };
 
+export const setUserName=async(req,res,next) => {
+  try {
+    if (req?.userId) {
+      const { username } = req.body;
+      if (username) {
+        const usernameValid = await prisma.user.findUnique({
+          where: { username: username },
+        });
+        if (usernameValid) {
+          return res.status(200).json({ usernameError: true });
+        }
+        await prisma.user.update({
+          where: { id: req.userId },
+          data: {
+            username
+          },
+        });
+        return res.status(200).send("Username set successfully.");
+      } else {
+        return res
+          .status(200)
+          .send({emptyFieldError: true});
+      }
+    }
+  } catch (err) {
+    if (err instanceof Prisma.PrismaClientKnownRequestError) {
+      if (err.code === "P2002") {
+        return res.status(400).json({ usernameError: true });
+      }
+    } else {
+      return res.status(500).send("Internal Server Error");
+    }
+    throw err;
+  }
+}
 export const setUserImage = async (req, res, next) => {
   try {
     if (req.file) {
