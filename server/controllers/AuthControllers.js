@@ -149,18 +149,11 @@ export const getUserInfo = async (req, res, next) => {
 export const setUserInfo = async (req, res, next) => {
   try {
     if (req?.userId) {
-      const { username, fullName, description } = req.body;
-      if (username && fullName && description) {
-        const usernameValid = await prisma.user.findUnique({
-          where: { username: username },
-        });
-        if (usernameValid) {
-          return res.status(200).json({ usernameError: true });
-        }
+      const { fullName, description } = req.body;
+      if (fullName && description) {
         await prisma.user.update({
           where: { id: req.userId },
           data: {
-            username,
             fullName,
             description,
             isProfileInfoSet: true,
