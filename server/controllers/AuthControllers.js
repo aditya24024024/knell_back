@@ -198,7 +198,7 @@ export const setUserName=async(req,res,next) => {
         return res.status(200).send("Username set successfully.");
       } else {
         return res
-          .status(200)
+          .status(304)
           .send({emptyFieldError: true});
       }
     }
