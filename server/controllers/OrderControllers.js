@@ -2,62 +2,116 @@ import prisma from "../Prisma_client.js";
 import Stripe from "stripe";
 import dotenv from "dotenv";
 import { send_mail, accept_mail } from "./MailControllers.js";
+import Razorpay from "razorpay";
+import crypto from "crypto";
+
+const Razorpay = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_SECRET,
+});
 
 
-dotenv.config();
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+export const createOrder = async (req, res) => {
+  try {
+    if (!req.userId) return res.status(401).send("Unauthorized");
 
+    /**
+     * =========================
+     * PAYMENT VERIFICATION
+     * =========================
+     */
+    const {
+      razorpay_payment_id,
+      razorpay_order_id,
+      razorpay_signature,
+    } = req.body;
 
-export const createOrder = async (req, res, next) => {
-    try {
-      if(req?.userId){
-        if (req?.body?.gigid) {
-        const { gigid } = req.body;
-        const gig = await prisma.gigs.findUnique({
-          where: { id: parseInt(gigid) },
-        });
-        const paymentIntent = await stripe.paymentIntents.create({
-          amount: gig?.price * 100,
-          currency: "usd",
-          automatic_payment_methods: {
-            enabled: true,
-          },
-        });
-        const already_ordered=await prisma.orders.findFirst({
-          where: { gigId: parseInt(gigid),
-                    buyerId:req?.userId,
-                    status:{
-                        not:"Completed"
-                    }
-                 },
-        });
-        if(already_ordered) {return res.status(401).send("You already have a pending request from the gig");}
-        await prisma.orders.create({
-          data: {
-            paymentIntent: paymentIntent.id,
-            price: gig?.price,
-            buyer: { connect: { id: req?.userId } },
-            gig: { connect: { id: gig?.id } },
-          },
-        });
-        const userId=gig.userId;
-        const {email}=await prisma.user.findUnique({
-          where:{id:userId},
-          select:{email:true},
-        })
-        await send_mail(email);
-        res.status(200).send({
-          clientSecret: paymentIntent.client_secret,
-          orderid: prisma.orders.id,
-        });
-      } else {
-        res.status(400).send("Gig id is required.");
-      }}
-    } catch (err) {
-      console.log(err);
-      return res.status(500).send("Internal Server Error");
+    if (
+      razorpay_payment_id &&
+      razorpay_order_id &&
+      razorpay_signature
+    ) {
+      const body = razorpay_order_id + "|" + razorpay_payment_id;
+
+      const expectedSignature = crypto
+        .createHmac("sha256", process.env.RAZORPAY_SECRET)
+        .update(body)
+        .digest("hex");
+
+      if (expectedSignature !== razorpay_signature) {
+        return res.status(400).send("Invalid payment signature");
+      }
+
+      // 🔥 reuse paymentIntentA
+      await prisma.orders.updateMany({
+        where: { paymentIntentA: razorpay_order_id },
+        data: { status: "Completed" },
+      });
+
+      return res.status(200).json("Payment verified");
     }
-  };
+
+    /**
+     * =========================
+     * ORDER CREATION
+     * =========================
+     */
+    const { gigid } = req.body;
+    if (!gigid) return res.status(400).send("Gig id is required");
+
+    const gig = await prisma.gigs.findUnique({
+      where: { id: parseInt(gigid) },
+    });
+
+    const already_ordered = await prisma.orders.findFirst({
+      where: {
+        gigId: parseInt(gigid),
+        buyerId: req.userId,
+        status: { not: "Completed" },
+      },
+    });
+
+    if (already_ordered)
+      return res
+        .status(401)
+        .send("You already have a pending request from the gig");
+
+    // 🔥 Razorpay order
+    const razorpayOrder = await razorpay.orders.create({
+      amount: gig.price * 100,
+      currency: "INR",
+      receipt: `receipt_${Date.now()}`,
+    });
+
+    await prisma.orders.create({
+      data: {
+        paymentIntentA: razorpayOrder.id, // 👈 reused column
+        price: gig.price,
+        buyer: { connect: { id: req.userId } },
+        gig: { connect: { id: gig.id } },
+        status: "Pending",
+      },
+    });
+
+    const seller = await prisma.user.findUnique({
+      where: { id: gig.userId },
+      select: { email: true },
+    });
+
+    await send_mail(seller.email);
+
+    return res.status(200).json({
+      orderId: razorpayOrder.id,
+      amount: razorpayOrder.amount,
+      currency: razorpayOrder.currency,
+      key: process.env.RAZORPAY_KEY_ID,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send("Internal Server Error");
+  }
+};
+
   
   
   export const getBuyerOrders = async (req, res, next) => {
