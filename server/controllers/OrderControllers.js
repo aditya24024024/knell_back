@@ -5,7 +5,7 @@ import { send_mail, accept_mail } from "./MailControllers.js";
 import Razorpay from "razorpay";
 import crypto from "crypto";
 
-const Razorpay = new Razorpay({
+const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
   key_secret: process.env.RAZORPAY_SECRET,
 });
