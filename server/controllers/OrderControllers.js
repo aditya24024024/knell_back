@@ -1,6 +1,7 @@
 import prisma from "../Prisma_client.js";
 import Stripe from "stripe";
 import dotenv from "dotenv";
+dotenv.config();
 import { send_mail, accept_mail } from "./MailControllers.js";
 import Razorpay from "razorpay";
 import crypto from "crypto";
@@ -44,7 +45,7 @@ export const createOrder = async (req, res) => {
 
       // 🔥 reuse paymentIntentA
       await prisma.orders.updateMany({
-        where: { paymentIntentA: razorpay_order_id },
+        where: { paymentIntent: razorpay_order_id },
         data: { status: "Completed" },
       });
 
@@ -85,7 +86,7 @@ export const createOrder = async (req, res) => {
 
     await prisma.orders.create({
       data: {
-        paymentIntentA: razorpayOrder.id, // 👈 reused column
+        paymentIntent: razorpayOrder.id, // 👈 reused column
         price: gig.price,
         buyer: { connect: { id: req.userId } },
         gig: { connect: { id: gig.id } },
