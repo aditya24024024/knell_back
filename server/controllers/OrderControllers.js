@@ -58,7 +58,7 @@ export const createOrder = async (req, res) => {
 
     /**
      * =========================
-     * 2️⃣ ORDER CREATION
+     * 2️⃣ ORDER CREATION yoyoyoyo
      * =========================
      */
     if (!gigid) return res.status(400).send("Gig id is required");
