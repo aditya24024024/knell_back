@@ -271,7 +271,7 @@ export const forgot_send_otp = async (req, res) => {
     );
     await sendResetOtpEmail(email, otp);
     return res.status(200).json({
-      user: { email: user.email },
+      user: { email: existing_user.email },
     });
   } catch (error) {
     console.error("Failed to send OTP:", error);
