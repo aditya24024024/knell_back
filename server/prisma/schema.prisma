@@ -23,14 +23,8 @@ model User {
   messagesSent     Message[] @relation("sentMessages")
   orders           Orders[]
   reviews          Reviews[]
-}
 
-model Otp {
-  id               Int       @id @default(autoincrement())
-  email            String    @unique
-  password         String
-  code             String
-  expiresAt        DateTime
+  wallet SellerWallet? @relation("UserWallet")
 }
 
 model Gigs {
@@ -55,9 +49,9 @@ model Orders {
   createdAt     DateTime  @default(now())
   buyerId       Int
   paymentIntent String
+  status        String    @default("Request Sent")
   gigId         Int
   price         Int
-  status        String    @default("Request Sent")
   messages      Message[]
   buyer         User      @relation(fields: [buyerId], references: [id], onDelete: Cascade)
   gig           Gigs      @relation(fields: [gigId], references: [id], onDelete: Cascade)
@@ -85,4 +79,19 @@ model Message {
   order       Orders   @relation(fields: [orderId], references: [id], onDelete: Cascade)
   recipient   User     @relation("receivedMessages", fields: [recipientId], references: [id], onDelete: Cascade)
   sender      User     @relation("sentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+}
+
+model SellerWallet {
+  id          Int @id @default(autoincrement())
+  sellerId    Int @unique
+  balance     Int @default(0)
+  totalEarned Int @default(0)
+
+  razorpayContactId     String?
+  razorpayFundAccountId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  seller User @relation("UserWallet", fields: [sellerId], references: [id])
 }

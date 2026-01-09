@@ -11,6 +11,7 @@ import { messageRoutes } from "./routes/MessagesRoutes.js";
 import { dashboardRoutes } from "./routes/DashboardRoutes.js";
 import { mailRoutes } from "./routes/MailRoutes.js";
 import { currencyMiddleware } from "./middlewares/currencyMiddleware.js";
+import { walletRoutes } from "./routes/WalletRoutes.js";
 
 dotenv.config();
 const app = express();
@@ -66,6 +67,7 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/otp", mailRoutes);
+app.use("/api", walletRoutes);
 
 // socket.io should also be configured with CORS allowedOrigins
 const server = http.createServer(app);

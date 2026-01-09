@@ -293,9 +293,26 @@ export const complete = async (req, res) => {
     const { orderId } = req.body;
     if (!orderId) return res.status(400).send("Order id required");
 
-    await prisma.orders.update({
+    const order = await prisma.orders.update({
       where: { id: parseInt(orderId) },
       data: { status: "Completed" },
+      include: {
+        gig: true,
+      },
+    });
+
+    // 💰 CREDIT SELLER WALLET
+    await prisma.sellerWallet.upsert({
+      where: { sellerId: order.gig.userId },
+      update: {
+        balance: { increment: order.price },
+        totalEarned: { increment: order.price },
+      },
+      create: {
+        sellerId: order.gig.userId,
+        balance: order.price,
+        totalEarned: order.price,
+      },
     });
 
     return res.status(200).json("Success");
