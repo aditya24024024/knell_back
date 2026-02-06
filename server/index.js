@@ -21,7 +21,6 @@ const port = process.env.PORT || 3001;
 const allowedOrigins = [
   "https://knell.co.in",
   "https://www.knell.co.in",
-  "http://localhost:3000"
 ];
 
 // === CORS & Preflight handler (MUST be before routes) ===
