@@ -10,7 +10,7 @@ import { orderRoutes } from "./routes/OrderRoutes.js";
 import { messageRoutes } from "./routes/MessagesRoutes.js";
 import { dashboardRoutes } from "./routes/DashboardRoutes.js";
 import { mailRoutes } from "./routes/MailRoutes.js";
-import { currencyMiddleware } from "./middlewares/currencyMiddleware.js";
+// import { currencyMiddleware } from "./middlewares/currencyMiddleware.js";
 import { walletRoutes } from "./routes/WalletRoutes.js";
 
 dotenv.config();
@@ -54,7 +54,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 // currency middleware (optional) — after CORS so req.currency is available to routes
-app.use(currencyMiddleware);
+// app.use(currencyMiddleware);
 
 // static folders and routes
 app.use("/uploads", express.static("uploads"));
