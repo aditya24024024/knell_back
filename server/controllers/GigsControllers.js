@@ -214,7 +214,7 @@ export const addGig = async (req, res, next) => {
   };
 
   export const addReview = async (req, res, next) => {
-    console.log(req.body.reviewText)
+    // console.log(req.body.reviewText)
     try {
       if (req.userId && req.params.gigId) {
         if (await checkOrder(req.userId, req.params.gigId)) {
